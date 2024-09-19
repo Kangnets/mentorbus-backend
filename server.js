@@ -56,7 +56,7 @@ app.post("/onboarding/mentee", (req, res) => {
   res.status(200).json({ message: "Data saved successfully" });
 });
 
-//수업 열기
+// 수업 열기
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content } = req.body;
 
@@ -75,6 +75,7 @@ app.post("/class/open", (req, res) => {
   // 댓글 저장
   classes.push(newClass);
 
+  // 전체 newClass 객체를 응답으로 보냄
   res
     .status(200)
     .json({ message: "Comment saved successfully", comment: newClass });
