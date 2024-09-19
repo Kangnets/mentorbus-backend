@@ -63,12 +63,12 @@ app.post("/class/open", (req, res) => {
   // 새로운 수업 생성
   const newClass = {
     id: classId++, // 댓글 인덱스 번호
-    content, // 댓글 내용
-    title, // 좋아요 수
-    num, // 댓글 수 (대댓글)
-    nickname,
-    date,
-    map,
+    content: content, // 댓글 내용
+    title: title, // 좋아요 수
+    num: num, // 댓글 수 (대댓글)
+    nickname: nickname,
+    date: date,
+    map: map,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
