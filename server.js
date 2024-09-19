@@ -60,12 +60,6 @@ app.post("/onboarding/mentee", (req, res) => {
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content } = req.body;
 
-  if (!nickname || !content) {
-    return res
-      .status(400)
-      .json({ message: "Nickname and content are required" });
-  }
-
   // 새로운 수업 생성
   const newClass = {
     id: classId++, // 댓글 인덱스 번호
