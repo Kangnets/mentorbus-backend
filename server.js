@@ -149,12 +149,13 @@ app.post("/letter/favorite", (req, res) => {
 //글
 
 app.post("/letters", (req, res) => {
-  const { major, type, star_num, comment_num, question, mentor_answer, title } =
+  const { major, type, star_num, comment_num, question, mentor_answer, title, author } =
     req.body;
 
   // 새로운 댓글 생성
   const newLetter = {
     id: letterId++, // 댓글 인덱스 번호
+    author,
     star_num,
     comment_num,
     type,
