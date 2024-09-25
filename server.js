@@ -59,7 +59,7 @@ app.post("/onboarding/mentee", (req, res) => {
 
 // 수업 열기
 app.post("/class/open", (req, res) => {
-  const { nickname, title, num, date, map, content } = req.body;
+  const { nickname, title, num, date, map, content, name, major } = req.body;
 
   // 새로운 수업 생성
   const newClass = {
@@ -68,6 +68,8 @@ app.post("/class/open", (req, res) => {
     title: title, // 좋아요 수
     num: num, // 댓글 수 (대댓글)
     nickname: nickname,
+    major: major,
+    name: name,
     date: date,
     map: map,
     createdAt: new Date(), // 댓글 작성 시간
@@ -455,6 +457,7 @@ app.get("/mydata/:nickname", (req, res) => {
 
   res.status(200).json(myUserData);
 });
+
 app.listen(5002, () => {
   console.log("Server running on port 5002");
 });
