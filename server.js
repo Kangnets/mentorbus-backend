@@ -426,15 +426,14 @@ app.get("/classes", (req, res) => {
 });
 
 app.get("/classes/myClass/:name", (req, res) => {
-  const searchParams = new URLSearchParams(location.search);
-  const paramsName = searchParams.get("name");
+  const paramsName = req.params.name; // Get name from URL params
 
   if (myClass[paramsName]) {
     res.status(200).json(myClass[paramsName]);
-    console.log("Requested class name:", paramsName); // Log the name for debugging
+    console.log("Requested class name:", paramsName);
   } else {
     res.status(404).json({ error: "Class not found" });
-    console.log("Class not found for name:", paramsName); // Log the name for debugging
+    console.log("Class not found for name:", paramsName);
   }
 });
 
