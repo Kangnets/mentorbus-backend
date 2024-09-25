@@ -19,7 +19,7 @@
     "express": "4.21.0",
     "express-validator": "7.2.0",
     "jsonwebtoken": "9.0.2",
-    "node-fetch": "3.3.2"
+    "node-fetch": "2.7.0"
   },
   "devDependencies": {
     "morgan": "1.10.0",
