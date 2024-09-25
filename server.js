@@ -149,6 +149,32 @@ app.post("/letter/favorite", (req, res) => {
 //글
 
 app.post("/letters", (req, res) => {
+  const { major, type, star_num, comment_num, question, mentor_answer, title } =
+    req.body;
+
+  // 새로운 댓글 생성
+  const newLetter = {
+    id: letterId++, // 댓글 인덱스 번호
+    star_num,
+    comment_num,
+    type,
+    mentor_answer,
+    major,
+    question,
+    title,
+    createdAt: new Date(), // 댓글 작성 시간
+  };
+
+  // 댓글 저장
+  letters.push(newLetter);
+
+  res
+    .status(200)
+    .json({ message: "Comment saved successfully", comment: newLetter });
+});
+
+//임시코드
+app.post("/letters/aas ", (req, res) => {
   const {
     userName,
     major,
