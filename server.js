@@ -184,12 +184,13 @@ app.post("/letters", (req, res) => {
     .status(200)
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
+
 app.patch("/letters/:id", async (req, res) => {
   const { id } = req.params;
   const { isClick } = req.body;
 
   try {
-    const updatedLetter = await Letters.findByIdAndUpdate(
+    const updatedLetter = await letters.findByIdAndUpdate(
       id,
       { isClick },
       { new: true }
