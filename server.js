@@ -435,6 +435,8 @@ app.get("/classes/myClass/:name", (req, res) => {
   if (myClass[paramsName]) {
     res.status(200).json(myClass[paramsName]);
     console.log("Requested class name:", paramsName);
+  } else if (paramsName == "all") {
+    res.status(200).json(myClass);
   } else {
     res.status(404).json({ error: "Class not found" });
     console.log("Class not found for name:", paramsName);
