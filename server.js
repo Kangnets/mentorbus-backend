@@ -426,14 +426,14 @@ app.get("/classes", (req, res) => {
 });
 
 app.get("/classes/myClass/:name", (req, res) => {
-  const { name } = req.params.name;
+  const { name } = req.params; // Correctly destructure req.params
 
   if (myClass[name]) {
     res.status(200).json(myClass[name]);
     console.log("Requested class name:", name); // Log the name for debugging
   } else {
     res.status(404).json({ error: "Class not found" });
-    console.log("Requested class name:", name); // Log the name for debugging
+    console.log("Class not found for name:", name); // Log the name for debugging
   }
 });
 
