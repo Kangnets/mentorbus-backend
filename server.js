@@ -173,32 +173,20 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
-//임시코드
-app.post("/letters/aas ", (req, res) => {
-  const {
-    userName,
-    major,
-    position,
-    type,
-    star_num,
-    comment_num,
-    answer,
-    question,
-    mentor_answer,
-  } = req.body;
+app.post("/letters/best", (req, res) => {
+  const { major, type, star_num, comment_num, question, mentor_answer, title } =
+    req.body;
 
   // 새로운 댓글 생성
   const newLetter = {
     id: letterId++, // 댓글 인덱스 번호
-    userName,
-    major,
-    position,
-    type,
     star_num,
     comment_num,
-    answer,
-    question,
+    type,
     mentor_answer,
+    major,
+    question,
+    title,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
