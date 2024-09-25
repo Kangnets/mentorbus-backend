@@ -184,8 +184,16 @@ app.post("/letters", (req, res) => {
 });
 
 app.post("/letters/best", (req, res) => {
-  const { major, type, star_num, comment_num, question, mentor_answer, title } =
-    req.body;
+  const {
+    major,
+    type,
+    star_num,
+    comment_num,
+    question,
+    mentor_answer,
+    title,
+    author,
+  } = req.body;
 
   // 새로운 댓글 생성
   Letters[author] = {
