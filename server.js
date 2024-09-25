@@ -423,11 +423,15 @@ app.get("/classes", (req, res) => {
   res.status(200).json(classes);
 });
 
-// GET API for all classes
-app.get("/classes/myClass", (req, res) => {
-  const { id } = req.params;
+// GET API for class by id
+app.get("/classes/myClass/:id", (req, res) => {
+  const { id } = req.params; // 이제 URL에서 id를 가져옴
 
-  res.status(200).json(myClass[id]);
+  if (myClass[id]) {
+    res.status(200).json(myClass[id]); // id에 맞는 데이터를 반환
+  } else {
+    res.status(404).json({ error: "Class not found" }); // id가 없을 경우 404 처리
+  }
 });
 
 // GET API for a single class by ID
