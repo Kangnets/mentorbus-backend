@@ -62,7 +62,8 @@ app.post("/onboarding/mentee", (req, res) => {
 
 // 수업 열기
 app.post("/class/open", (req, res) => {
-  const { nickname, title, num, date, map, content, name, major } = req.body;
+  const { nickname, title, num, date, map, content, name, major, status } =
+    req.body;
 
   // 새로운 수업 생성
   const newClass = {
@@ -75,6 +76,7 @@ app.post("/class/open", (req, res) => {
     name: name,
     date: date,
     map: map,
+    status: status,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
