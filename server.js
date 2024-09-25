@@ -184,6 +184,44 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
+// Route to handle PATCH requests to update isClick
+app.patch("/letters/:id", async (req, res) => {
+  const { id } = req.params;
+  const { isClick } = req.body; // This will be set to true when a star is clicked
+
+  try {
+    // Send a PATCH request to the backend API to update the specific question
+    const response = await fetch(
+      `https://port-0-mentorbus-backend-m0zjsul0a4243974.sel4.cloudtype.app/letters/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isClick }), // Update the isClick value
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const updatedData = await response.json();
+
+    // Send the updated data back to the client
+    res.json({
+      message: "Question updated successfully",
+      data: updatedData,
+    });
+  } catch (error) {
+    console.error("Error updating the question:", error);
+    res.status(500).json({
+      message: "Failed to update question",
+      error: error.message,
+    });
+  }
+});
+
 app.post("/letters/best", (req, res) => {
   const {
     major,
