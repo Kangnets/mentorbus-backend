@@ -426,7 +426,7 @@ app.get("/classes", (req, res) => {
 });
 
 app.get("/classes/myClass/:name", (req, res) => {
-  const { name } = req.params;
+  const { name } = req.params.name;
 
   if (myClass[name]) {
     res.status(200).json(myClass[name]);
