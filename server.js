@@ -81,6 +81,31 @@ app.post("/class/open", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newClass });
 });
 
+// 수강한 수업
+app.post("/class/done", (req, res) => {
+  const { nickname, title, num, date, map, content } = req.body;
+
+  // 새로운 수업 생성
+  const newClass = {
+    id: classId++, // 댓글 인덱스 번호
+    content: content, // 댓글 내용
+    title: title, // 좋아요 수
+    num: num, // 댓글 수 (대댓글)
+    nickname: nickname,
+    date: date,
+    map: map,
+    createdAt: new Date(), // 댓글 작성 시간
+  };
+
+  // 댓글 저장
+  classes.push(newClass);
+
+  // 전체 newClass 객체를 응답으로 보냄
+  res
+    .status(200)
+    .json({ message: "Comment saved successfully", comment: newClass });
+});
+
 //수업 찾기
 app.post("/class/search", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
@@ -122,28 +147,32 @@ app.post("/letter/favorite", (req, res) => {
 });
 
 //글
-app.post("/letters", (req, res) => {
-  const { nickname, position, school, interest, want, content } = req.body;
 
-  if (!nickname || !content) {
-    return res
-      .status(400)
-      .json({ message: "Nickname and content are required" });
-  }
+app.post("/letters", (req, res) => {
+  const {
+    userName,
+    major,
+    position,
+    type,
+    star_num,
+    comment_num,
+    answer,
+    question,
+    mentor_answer,
+  } = req.body;
 
   // 새로운 댓글 생성
   const newLetter = {
     id: letterId++, // 댓글 인덱스 번호
-    content, // 댓글 내용
-    likes: 0, // 좋아요 수
-    replyCount: 0, // 댓글 수 (대댓글)
-    author: {
-      nickname,
-      position,
-      school,
-      interest,
-      want,
-    },
+    userName,
+    major,
+    position,
+    type,
+    star_num,
+    comment_num,
+    answer,
+    question,
+    mentor_answer,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
@@ -225,6 +254,57 @@ app.post("/mydata", (req, res) => {
     want,
     level,
     profile,
+  };
+
+  res.status(200).json({ message: "Data saved successfully" });
+});
+
+app.post("/mydata", (req, res) => {
+  const { nickname, position, school, interest, want, level, profile } =
+    req.body;
+
+  if (!nickname) {
+    return res.status(400).json({ message: "Insta handle is required" });
+  }
+
+  // Save the data associated with the insta handle
+  myData[nickname] = {
+    nickname,
+    position,
+    school,
+    interest,
+    want,
+    level,
+    profile,
+  };
+
+  res.status(200).json({ message: "Data saved successfully" });
+});
+
+// Save the user data to the server using insta as the key
+app.post("/register/data", (req, res) => {
+  const { mbpbu } = req.body; // Add insta to retrieve the associated user
+  const {
+    mbti = null,
+    birth = null,
+    phone_num = null,
+    bank_id = null,
+  } = req.body; // Set default values to null if not provided
+
+  if (!insta) {
+    return res.status(400).json({ message: "Insta handle is required" });
+  }
+
+  if (!userData[insta]) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Save the data associated with the insta handle
+  userDataAdded[insta] = {
+    mbti,
+    birth,
+    phone_num,
+    bank_id,
   };
 
   res.status(200).json({ message: "Data saved successfully" });
