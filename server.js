@@ -7,7 +7,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 let userData = {}; // Store user data by insta (Instagram handle) as key
-let Letters = {}; // Store user data by insta (Instagram handle) as key
 
 let comments = []; // 댓글 저장소
 let commentId = 0; // 댓글 인덱스 넘버
@@ -195,8 +194,7 @@ app.post("/letters/best", (req, res) => {
     author,
   } = req.body;
 
-  // 새로운 댓글 생성
-  Letters[author] = {
+  const newLetter = {
     id: letterId++, // 댓글 인덱스 번호
     author,
     star_num,
