@@ -110,7 +110,7 @@ app.post("/class/save", (req, res) => {
   };
 
   // Store it in `myClass` using a unique identifier (e.g., class ID or name)
-  myClass[newClass.id] = newClass;
+  myClass[newClass.name] = newClass;
 
   // Send only the newly created class as a response
   res
