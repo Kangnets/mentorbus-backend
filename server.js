@@ -90,13 +90,13 @@ app.post("/class/open", (req, res) => {
 });
 
 // 수업 열기
-app.post("/class/save/:id", (req, res) => {
-  const { nickname, title, num, date, map, content, name, major } = req.body;
-  const { id } = req.params;
+app.post("/class/save", (req, res) => {
+  const { nickname, title, num, date, map, content, name, major, status } =
+    req.body;
 
   // 새로운 수업 생성
-  myClass[id] = {
-    id: myclassId++, // 댓글 인덱스 번호
+  myClass[name] = {
+    id: classId++, // 댓글 인덱스 번호
     content: content, // 댓글 내용
     title: title, // 좋아요 수
     num: num, // 최대 인원 수
@@ -105,6 +105,7 @@ app.post("/class/save/:id", (req, res) => {
     name: name,
     date: date,
     map: map,
+    status: status,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
