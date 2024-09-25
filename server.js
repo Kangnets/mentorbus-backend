@@ -89,30 +89,33 @@ app.post("/class/open", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newClass });
 });
 
-// 수업 열기
+// Save the new class
 app.post("/class/save", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
     req.body;
 
-  // 새로운 수업 생성
-  myClass[name] = {
-    id: classId++, // 댓글 인덱스 번호
-    content: content, // 댓글 내용
-    title: title, // 좋아요 수
-    num: num, // 최대 인원 수
+  // Create a new class entry
+  const newClass = {
+    id: classId++, // Increment class ID
+    content: content,
+    title: title,
+    num: num,
     nickname: nickname,
     major: major,
     name: name,
     date: date,
     map: map,
     status: status,
-    createdAt: new Date(), // 댓글 작성 시간
+    createdAt: new Date(),
   };
 
-  // 전체 newClass 객체를 응답으로 보냄
+  // Store it in `myClass` using a unique identifier (e.g., class ID or name)
+  myClass[newClass.id] = newClass;
+
+  // Send only the newly created class as a response
   res
     .status(200)
-    .json({ message: "Comment saved successfully", comment: myClass });
+    .json({ message: "Class saved successfully", comment: newClass });
 });
 
 // 수강한 수업
