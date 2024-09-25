@@ -432,14 +432,14 @@ app.get("/classes", (req, res) => {
 app.get("/classes/myClass/:name", (req, res) => {
   const paramsName = req.params.name; // Get name from URL params
 
-  if (myClass[paramsName]) {
-    res.status(200).json(myClass[paramsName]);
-    console.log("Requested class name:", paramsName);
-  } else if (paramsName == "all") {
-    res.status(200).json(myClass);
+  if (paramsName === "all") {
+    // Convert the object to an array of classes
+    const allClasses = Object.values(myClass);
+    return res.status(200).json(allClasses); // Return all classes as an array
+  } else if (myClass[paramsName]) {
+    return res.status(200).json(myClass[paramsName]);
   } else {
     res.status(404).json({ error: "Class not found" });
-    console.log("Class not found for name:", paramsName);
   }
 });
 
