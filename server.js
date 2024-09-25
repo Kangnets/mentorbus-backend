@@ -427,12 +427,13 @@ app.get("/classes", (req, res) => {
 
 app.get("/classes/myClass/:name", (req, res) => {
   const { name } = req.params;
-  console.log("Requested class name:", name); // Log the name for debugging
 
   if (myClass[name]) {
     res.status(200).json(myClass[name]);
+    console.log("Requested class name:", name); // Log the name for debugging
   } else {
     res.status(404).json({ error: "Class not found" });
+    console.log("Requested class name:", name); // Log the name for debugging
   }
 });
 
