@@ -426,11 +426,11 @@ app.get("/classes", (req, res) => {
 });
 
 // GET API for class by id
-app.get("/classes/myClass/:nickname", (req, res) => {
-  const { nickname } = req.params; // 이제 URL에서 id를 가져옴
+app.get("/classes/myClass/:name", (req, res) => {
+  const { name } = req.params; // 이제 URL에서 id를 가져옴
 
-  if (myClass[nickname]) {
-    res.status(200).json(myClass[nickname]); // id에 맞는 데이터를 반환
+  if (myClass[name]) {
+    res.status(200).json(myClass[name]); // id에 맞는 데이터를 반환
   } else {
     res.status(404).json({ error: "Class not found" }); // id가 없을 경우 404 처리
   }
