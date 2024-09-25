@@ -158,6 +158,7 @@ app.post("/letters", (req, res) => {
     mentor_answer,
     title,
     author,
+    isClick,
   } = req.body;
 
   // 새로운 댓글 생성
@@ -171,6 +172,7 @@ app.post("/letters", (req, res) => {
     major,
     question,
     title,
+    isClick,
     createdAt: new Date(), // 댓글 작성 시간
   };
 
