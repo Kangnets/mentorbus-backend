@@ -18,6 +18,9 @@ let letterId = 0; // 글 인덱스 넘버
 let classes = []; // 수업 저장소
 let classId = 0; // 수업 인덱스 넘버
 
+let myClass = []; // 수업 저장소
+let myclassId = 0; // 수업 인덱스 넘버
+
 //온보딩 멘토
 app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major } = req.body;
@@ -66,7 +69,7 @@ app.post("/class/open", (req, res) => {
     id: classId++, // 댓글 인덱스 번호
     content: content, // 댓글 내용
     title: title, // 좋아요 수
-    num: num, // 댓글 수 (대댓글)
+    num: num, // 최대 인원 수
     nickname: nickname,
     major: major,
     name: name,
@@ -84,6 +87,31 @@ app.post("/class/open", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newClass });
 });
 
+// 수업 열기
+app.post("/class/save/:id", (req, res) => {
+  const { nickname, title, num, date, map, content, name, major } = req.body;
+  const { id } = req.params;
+
+  // 새로운 수업 생성
+  myClass[id] = {
+    id: myclassId++, // 댓글 인덱스 번호
+    content: content, // 댓글 내용
+    title: title, // 좋아요 수
+    num: num, // 최대 인원 수
+    nickname: nickname,
+    major: major,
+    name: name,
+    date: date,
+    map: map,
+    createdAt: new Date(), // 댓글 작성 시간
+  };
+
+  // 전체 newClass 객체를 응답으로 보냄
+  res
+    .status(200)
+    .json({ message: "Comment saved successfully", comment: myClass });
+});
+
 // 수강한 수업
 app.post("/class/done", (req, res) => {
   const { nickname, title, num, date, map, content } = req.body;
@@ -93,7 +121,7 @@ app.post("/class/done", (req, res) => {
     id: classId++, // 댓글 인덱스 번호
     content: content, // 댓글 내용
     title: title, // 좋아요 수
-    num: num, // 댓글 수 (대댓글)
+    num: num, // 최대 인원 수
     nickname: nickname,
     date: date,
     map: map,
@@ -393,6 +421,13 @@ app.get("/onboarding/mentee/:nickname", (req, res) => {
 // GET API for all classes
 app.get("/classes", (req, res) => {
   res.status(200).json(classes);
+});
+
+// GET API for all classes
+app.get("/classes/myClass", (req, res) => {
+  const { id } = req.params;
+
+  res.status(200).json(myClass[id]);
 });
 
 // GET API for a single class by ID
