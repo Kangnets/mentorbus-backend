@@ -185,32 +185,24 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
-app.patch("/letters/:id", async (req, res) => {
+app.patch("/letters/:id", (req, res) => {
   const { id } = req.params;
   const { isClick } = req.body;
 
-  try {
-    const updatedLetter = await letters.findByIdAndUpdate(
-      id,
-      { isClick },
-      { new: true }
-    );
+  // Find the letter in the array
+  const letterIndex = letters.findIndex((letter) => letter.id === parseInt(id));
 
-    if (!updatedLetter) {
-      return res.status(404).json({ message: "Letter not found" });
-    }
-
-    res.json({
-      message: "Letter updated successfully",
-      data: updatedLetter,
-    });
-  } catch (error) {
-    console.error("Error updating letter:", error);
-    res.status(500).json({
-      message: "Failed to update letter",
-      error: error.message,
-    });
+  if (letterIndex === -1) {
+    return res.status(404).json({ message: "Letter not found" });
   }
+
+  // Update the isClick property
+  letters[letterIndex].isClick = isClick;
+
+  res.json({
+    message: "Letter updated successfully",
+    data: letters[letterIndex],
+  });
 });
 
 app.post("/letters/best", (req, res) => {
