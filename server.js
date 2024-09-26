@@ -532,6 +532,16 @@ app.get("/mentor/data", (req, res) => {
   res.status(200).json({ mentors }); // 필터링된 멘토 데이터만 응답으로 전송
 });
 
+// GET API for mentor data (only where position is "멘토")
+app.get("/mentee/data", (req, res) => {
+  // userData 객체의 값들을 배열로 변환하고, 그 중 position이 "멘토"인 데이터만 필터링
+  const mentees = Object.values(userData).filter(
+    (user) => user.position === "멘티"
+  );
+
+  res.status(200).json({ mentees }); // 필터링된 멘토 데이터만 응답으로 전송
+});
+
 app.listen(5002, () => {
   console.log("Server running on port 5002");
 });
