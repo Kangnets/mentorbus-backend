@@ -21,6 +21,19 @@ let classId = 0; // 수업 인덱스 넘버
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
 
+// 카카오 로그인 결과를 수신하는 엔드포인트
+app.post("/api/login", (req, res) => {
+  const loginData = req.body;
+
+  // 로그인 데이터 처리
+  console.log("Received Kakao login data:", loginData);
+
+  // 성공적인 응답 전송
+  res
+    .status(200)
+    .json({ message: "Login data received successfully", data: loginData });
+});
+
 //온보딩 멘토
 app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major } = req.body;
@@ -241,6 +254,7 @@ app.patch("/letters/:id", (req, res) => {
   });
 });
 
+//class 상태 수정
 app.patch("/classes/:id", (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -260,6 +274,41 @@ app.patch("/classes/:id", (req, res) => {
   res.json({
     message: "Class updated successfully",
     data: letters[myClassIndex],
+  });
+});
+
+// 수업 수정하기
+app.patch("/classes/:id", (req, res) => {
+  const { id } = req.params;
+  const { title, num, date, map, content, name, nickname, major, status } =
+    req.body;
+
+  // 수업 배열에서 해당 수업 찾기
+  const classIndex = classes.findIndex(
+    (classItem) => classItem.id === parseInt(id)
+  );
+
+  if (classIndex === -1) {
+    return res.status(404).json({ message: "Class not found" });
+  }
+
+  // 기존 수업 정보를 업데이트
+  classes[classIndex] = {
+    ...classes[classIndex], // 기존 정보를 유지하면서
+    title: title !== undefined ? title : classes[classIndex].title,
+    num: num !== undefined ? num : classes[classIndex].num,
+    date: date !== undefined ? date : classes[classIndex].date,
+    map: map !== undefined ? map : classes[classIndex].map,
+    content: content !== undefined ? content : classes[classIndex].content,
+    name: name !== undefined ? name : classes[classIndex].name,
+    nickname: nickname !== undefined ? nickname : classes[classIndex].nickname,
+    major: major !== undefined ? major : classes[classIndex].major,
+    status: status !== undefined ? status : classes[classIndex].status,
+  };
+
+  res.json({
+    message: "Class updated successfully",
+    updatedClass: classes[classIndex],
   });
 });
 
@@ -539,7 +588,7 @@ app.get("/mentee/data", (req, res) => {
     (user) => user.position === "멘티"
   );
 
-  res.status(200).json({ mentees }); // 필터링된 멘토 데이터만 응답으로 전송
+  res.status(200).json({ mentors }); // 필터링된 멘토 데이터만 응답으로 전송
 });
 
 app.listen(5002, () => {
