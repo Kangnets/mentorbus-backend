@@ -58,42 +58,70 @@ app.get("/api/login/:nickname", (req, res) => {
 });
 
 //온보딩 멘토
+// 온보딩 멘토
 app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major } = req.body;
 
   if (!nickname) {
-    return res.status(400).json({ message: "Insta handle is required" });
+    return res.status(400).json({ message: "Nickname is required" });
   }
 
-  // Save the data associated with the insta handle
-  userData[nickname] = {
-    nickname,
-    position,
-    job,
-    major,
-  };
+  // 현재 시간을 기준으로 createdAt, editedAt 값을 설정
+  const createdAt = new Date();
+  const editedAt = new Date();
 
-  res.status(200).json({ message: "Data saved successfully" });
+  // SQL 쿼리 작성
+  const query = `
+    INSERT INTO userData (nickname, position, job, major, createdAt, editedAt)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  // 쿼리 실행
+  db.query(
+    query,
+    [nickname, position, job, major, createdAt, editedAt],
+    (err, result) => {
+      if (err) {
+        console.error("Error saving mentor data:", err);
+        return res.status(500).json({ message: "Failed to save data" });
+      }
+
+      res.status(200).json({ message: "Mentor data saved successfully" });
+    }
+  );
 });
 
-//온보딩 멘티
+// 온보딩 멘티
 app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
 
   if (!nickname) {
-    return res.status(400).json({ message: "Insta handle is required" });
+    return res.status(400).json({ message: "Nickname is required" });
   }
 
-  // Save the data associated with the insta handle
-  userData[nickname] = {
-    nickname,
-    position,
-    school,
-    interest,
-    want,
-  };
+  // 현재 시간을 기준으로 createdAt, editedAt 값을 설정
+  const createdAt = new Date();
+  const editedAt = new Date();
 
-  res.status(200).json({ message: "Data saved successfully" });
+  // SQL 쿼리 작성
+  const query = `
+    INSERT INTO userData (nickname, position, school, interest, want, createdAt, editedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // 쿼리 실행
+  db.query(
+    query,
+    [nickname, position, school, interest, want, createdAt, editedAt],
+    (err, result) => {
+      if (err) {
+        console.error("Error saving mentee data:", err);
+        return res.status(500).json({ message: "Failed to save data" });
+      }
+
+      res.status(200).json({ message: "Mentee data saved successfully" });
+    }
+  );
 });
 
 // 수업 열기
