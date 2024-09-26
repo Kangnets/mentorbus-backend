@@ -241,6 +241,26 @@ app.patch("/letters/:id", (req, res) => {
   });
 });
 
+app.patch("/classes/:id", (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  // Find the letter in the array
+  const myClassIndex = myClass.findIndex((my_class) => my_class.id === parseInt(id));
+
+  if (myClassIndex === -1) {
+    return res.status(404).json({ message: "Letter not found" });
+  }
+
+  // Update the isClick property
+  myClass[myClassIndex].status = status;
+
+  res.json({
+    message: "Class updated successfully",
+    data: letters[myClassIndex],
+  });
+});
+
 app.post("/letters/best", (req, res) => {
   const {
     major,
