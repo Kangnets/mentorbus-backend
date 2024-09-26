@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+let userDataMentor = {}; // Store user data by insta (Instagram handle) as key
 let userData = {}; // Store user data by insta (Instagram handle) as key
 
 let comments = []; // 댓글 저장소
@@ -30,7 +31,7 @@ app.post("/onboarding/mentor", (req, res) => {
   }
 
   // Save the data associated with the insta handle
-  userData[nickname] = {
+  userDataMentor[nickname] = {
     nickname,
     position,
     job,
@@ -524,8 +525,8 @@ app.get("/mydata/:nickname", (req, res) => {
 
 // GET API for all classes
 app.get("/mentor/data", (req, res) => {
-  res.status(200).json(userData);
-  console.log(userData);
+  res.status(200).json(userDataMentor);
+  console.log(userDataMentor);
 });
 
 app.listen(5002, () => {
