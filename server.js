@@ -529,7 +529,7 @@ app.get("/mentor/data", (req, res) => {
     (user) => user.position === "멘토"
   );
 
-  res.status(200).json(mentors); // 필터링된 멘토 데이터만 응답으로 전송
+  res.status(200).json({ mentors }); // 필터링된 멘토 데이터만 응답으로 전송
 });
 
 app.listen(5002, () => {
