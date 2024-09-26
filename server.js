@@ -115,7 +115,7 @@ app.post("/class/save", (req, res) => {
   // Send only the newly created class as a response
   res
     .status(200)
-    .json({ message: "Class saved successfully", comment: myClass });
+    .json({ message: "Class saved successfully", comment: newClass });
 });
 
 // 수강한 수업
@@ -429,7 +429,7 @@ app.get("/classes", (req, res) => {
   res.status(200).json(classes);
 });
 
-app.get("/classes/myClass/", (req, res) => {
+app.get("/classes/myClass", (req, res) => {
   if (myClass) {
     res.status(200).json(myClass);
   } else {
