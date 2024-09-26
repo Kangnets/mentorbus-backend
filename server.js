@@ -31,7 +31,7 @@ app.post("/onboarding/mentor", (req, res) => {
   }
 
   // Save the data associated with the insta handle
-  userDataMentor[nickname] = {
+  userData[nickname] = {
     nickname,
     position,
     job,
@@ -525,8 +525,8 @@ app.get("/mydata/:nickname", (req, res) => {
 
 // GET API for all classes
 app.get("/mentor/data", (req, res) => {
-  res.status(200).json(userDataMentor);
-  console.log(userDataMentor);
+  res.status(200).json(userData);
+  console.log(userData);
 });
 
 app.listen(5002, () => {
