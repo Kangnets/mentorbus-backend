@@ -522,9 +522,14 @@ app.get("/mydata/:nickname", (req, res) => {
   res.status(200).json(myUserData);
 });
 
-// GET API for all classes
+// GET API for mentor data (only where position is "멘토")
 app.get("/mentor/data", (req, res) => {
-  res.status(200).json(userData);
+  // userData 객체의 값들을 배열로 변환하고, 그 중 position이 "멘토"인 데이터만 필터링
+  const mentors = Object.values(userData).filter(
+    (user) => user.position === "멘토"
+  );
+
+  res.status(200).json(mentors); // 필터링된 멘토 데이터만 응답으로 전송
 });
 
 app.listen(5002, () => {
