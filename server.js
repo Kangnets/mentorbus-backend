@@ -1,6 +1,21 @@
-var dbConfig = require(__dirname + "/config/db.js");
-var conn = dbConfig.init();
-dbConfig.connect(conn);
+const mysql = require("mysql2");
+
+// MySQL DB 설정
+const db = mysql.createConnection({
+  host: "localhost", // DB 호스트
+  user: "mentorowner", // DB 사용자 이름
+  password: "kangwh05!!", // DB 비밀번호
+  database: "mentorbus_db", // 사용할 DB 이름
+});
+
+// DB 연결
+db.connect((err) => {
+  if (err) {
+    console.error("Error connecting to the database:", err);
+    return;
+  }
+  console.log("Connected to the MySQL database");
+});
 
 const fetch = require("node-fetch");
 const express = require("express");
