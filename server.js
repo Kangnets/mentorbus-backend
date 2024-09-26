@@ -246,7 +246,9 @@ app.patch("/classes/:id", (req, res) => {
   const { status } = req.body;
 
   // Find the letter in the array
-  const myClassIndex = myClass.findIndex((my_class) => my_class.id === parseInt(id));
+  const myClassIndex = myClass.findIndex(
+    (my_class) => my_class.id === parseInt(id)
+  );
 
   if (myClassIndex === -1) {
     return res.status(404).json({ message: "Letter not found" });
@@ -518,6 +520,11 @@ app.get("/mydata/:nickname", (req, res) => {
   }
 
   res.status(200).json(myUserData);
+});
+
+// GET API for all classes
+app.get("/mentor/data", (req, res) => {
+  res.status(200).json(classes);
 });
 
 app.listen(5002, () => {
