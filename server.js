@@ -524,7 +524,8 @@ app.get("/mydata/:nickname", (req, res) => {
 
 // GET API for all classes
 app.get("/mentor/data", (req, res) => {
-  res.status(200).json(classes);
+  res.status(200).json(userData);
+  console.log(userData);
 });
 
 app.listen(5002, () => {
