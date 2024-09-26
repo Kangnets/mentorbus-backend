@@ -1,3 +1,7 @@
+var dbConfig = require(__dirname + "/config/db.js");
+var conn = dbConfig.init();
+dbConfig.connect(conn);
+
 const fetch = require("node-fetch");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -21,7 +25,6 @@ let classId = 0; // 수업 인덱스 넘버
 
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
-
 
 // 카카오 로그인 결과를 수신하는 엔드포인트
 app.post("/api/login", (req, res) => {
@@ -149,71 +152,6 @@ app.post("/class/save", (req, res) => {
   res
     .status(200)
     .json({ message: "Class saved successfully", comment: newClass });
-});
-
-// 수강한 수업
-app.post("/class/done", (req, res) => {
-  const { nickname, title, num, date, map, content } = req.body;
-
-  // 새로운 수업 생성
-  const newClass = {
-    id: classId++, // 댓글 인덱스 번호
-    content: content, // 댓글 내용
-    title: title, // 좋아요 수
-    num: num, // 최대 인원 수
-    nickname: nickname,
-    date: date,
-    map: map,
-    createdAt: new Date(), // 댓글 작성 시간
-  };
-
-  // 댓글 저장
-  classes.push(newClass);
-
-  // 전체 newClass 객체를 응답으로 보냄
-  res
-    .status(200)
-    .json({ message: "Comment saved successfully", comment: newClass });
-});
-
-//수업 찾기
-app.post("/class/search", (req, res) => {
-  const { nickname, position, school, interest, want } = req.body;
-
-  if (!nickname) {
-    return res.status(400).json({ message: "Insta handle is required" });
-  }
-
-  // Save the data associated with the insta handle
-  userData[nickname] = {
-    nickname,
-    position,
-    school,
-    interest,
-    want,
-  };
-
-  res.status(200).json({ message: "Data saved successfully" });
-});
-
-//즐겨찾기
-app.post("/letter/favorite", (req, res) => {
-  const { nickname, position, school, interest, want } = req.body;
-
-  if (!nickname) {
-    return res.status(400).json({ message: "Insta handle is required" });
-  }
-
-  // Save the data associated with the insta handle
-  userData[nickname] = {
-    nickname,
-    position,
-    school,
-    interest,
-    want,
-  };
-
-  res.status(200).json({ message: "Data saved successfully" });
 });
 
 //글
