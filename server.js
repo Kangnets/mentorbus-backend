@@ -106,39 +106,31 @@ app.post("/onboarding/mentor", (req, res) => {
   );
 });
 
-// 온보딩 멘티
+// 온보딩 멘티 API
 app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
 
   if (!nickname) {
-    return res.status(400).json({ message: "Nickname is required" });
+    return res.status(400).json({ message: "Insta handle is required" });
   }
 
-  // 현재 시간을 기준으로 createdAt, editedAt 값을 설정
-  const createdAt = new Date();
-  const editedAt = new Date();
-
-  // SQL 쿼리 작성
   const query = `
     INSERT INTO userData (nickname, position, school, interest, want, createdAt, editedAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, NOW(), NOW())
   `;
 
-  // 쿼리 실행
-  db.query(
+  conn.query(
     query,
-    [nickname, position, school, interest, want, createdAt, editedAt],
-    (err, result) => {
+    [nickname, position, school, interest, want],
+    (err, results) => {
       if (err) {
         console.error("Error saving mentee data:", err);
-        return res.status(500).json({ message: "Failed to save data" });
+        return res.status(500).json({ message: "Error saving mentee data" });
       }
-
       res.status(200).json({ message: "Mentee data saved successfully" });
     }
   );
 });
-
 // 수업 열기
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
