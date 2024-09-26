@@ -8,6 +8,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 let userData = {}; // Store user data by insta (Instagram handle) as key
+let kakaoUserData = {}; // Store Kakao user data
 
 let comments = []; // 댓글 저장소
 let commentId = 0; // 댓글 인덱스 넘버
@@ -21,6 +22,7 @@ let classId = 0; // 수업 인덱스 넘버
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
 
+
 // 카카오 로그인 결과를 수신하는 엔드포인트
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
@@ -28,10 +30,28 @@ app.post("/api/login", (req, res) => {
   // 로그인 데이터 처리
   console.log("Received Kakao login data:", loginData);
 
+  // Save Kakao user data
+  const { nickname, ...rest } = loginData; // Destructure to get nickname and rest of the data
+  if (nickname) {
+    kakaoUserData[nickname] = { nickname, ...rest }; // Save the user data
+  }
+
   // 성공적인 응답 전송
   res
     .status(200)
     .json({ message: "Login data received successfully", data: loginData });
+});
+
+// GET API to retrieve Kakao user data
+app.get("/api/login/:nickname", (req, res) => {
+  const nickname = req.params.nickname;
+  const userData = kakaoUserData[nickname];
+
+  if (!userData) {
+    return res.status(404).json({ message: "User data not found" });
+  }
+
+  res.status(200).json(userData);
 });
 
 //온보딩 멘토
