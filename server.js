@@ -53,19 +53,78 @@ app.post("/api/login", (req, res) => {
   // 로그인 데이터 처리
   console.log("Received Kakao login data:", loginData);
 
-  // Save Kakao user data
-  const { nickname, ...rest } = loginData; // Destructure to get nickname and rest of the data
-  if (nickname) {
-    kakaoUserData[nickname] = { nickname, ...rest }; // Save the user data
-  }
-  console.log("loginData", loginData);
-  console.log("kakaoUserData", kakaoUserData);
-  console.log("nickname", nickname);
+  // scopes 배열에서 필요한 데이터를 추출
+  const nickname = loginData.scopes.includes("profile_nickname")
+    ? "nickname_value"
+    : null; // 'nickname_value'는 실제 닉네임 값으로 대체해야 함
+  const profile = loginData.scopes.includes("profile_image")
+    ? "profile_image_value"
+    : null; // 'profile_image_value'는 실제 프로필 이미지 URL로 대체해야 함
+  const email = loginData.scopes.includes("account_email")
+    ? "account_email_value"
+    : null; // 'account_email_value'는 실제 이메일 값으로 대체해야 함
 
-  // 성공적인 응답 전송
-  res
-    .status(200)
-    .json({ message: "Login data received successfully", data: loginData });
+  // accessToken과 refreshToken을 추출
+  const accessToken = loginData.accessToken;
+  const refreshToken = loginData.refreshToken;
+
+  // 현재 시간을 createdAt과 editedAt으로 설정
+  const createdAt = new Date();
+  const editedAt = new Date();
+
+  pool.query(
+    `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [nickname, profile, email, accessToken, refreshToken, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving Kakao login data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Kakao login data saved successfully" });
+    }
+  );
+});
+
+app.post("/onboarding/mentor", (req, res) => {
+  const { nickname, position, job, major, accesstoken } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+
+  pool.query(
+    `INSERT INTO userData (nickname, position,  job, major, accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, accesstoken, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentor data saved successfully" });
+    }
+  );
+});
+
+app.get("/onboarding/mentor", (req, res) => {
+  const { nickname, position, job, major, accesstoken } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+
+  pool.query(
+    `INSERT INTO userData (nickname, position,  job, major, accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, accesstoken, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentor data saved successfully" });
+    }
+  );
 });
 
 // GET API to retrieve Kakao user data
@@ -117,13 +176,13 @@ app.post("/onboarding/mentor", (req, res) => {
   */
 
 app.post("/onboarding/mentor", (req, res) => {
-  const { nickname, position, job, major } = req.body;
+  const { nickname, position, job, major, accesstoken } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, createdAt, editedAt],
+    `INSERT INTO userData (nickname, position,  job, major,accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, accesstoken, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
