@@ -81,7 +81,7 @@ app.post("/api/login", (req, res) => {
 
       // 데이터베이스에 저장
       pool.query(
-        `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           nickname,
           profile,
