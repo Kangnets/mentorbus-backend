@@ -2,7 +2,7 @@ const mysql = require("mysql2");
 
 // MySQL DB 설정
 const db = mysql.createConnection({
-  host: "localhost", // DB 호스트
+  host: "https://port-0-mentorbus-backend-m0zjsul0a4243974.sel4.cloudtype.app", // DB 호스트
   user: "mentorowner", // DB 사용자 이름
   password: "kangwh05!!", // DB 비밀번호
   port: 3306,
