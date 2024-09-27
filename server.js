@@ -668,8 +668,7 @@ app.get("/mentee/data", (req, res) => {
 
   res.status(200).json({ mentors }); // 필터링된 멘토 데이터만 응답으로 전송
 });
-
+*/
 app.listen(5002, () => {
   console.log("Server running on port 5002");
 });
-*/
