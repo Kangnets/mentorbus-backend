@@ -17,6 +17,8 @@ db.connect((err) => {
   console.log("Connected to the MySQL database");
 });
 
+app.use(express.json());
+
 const fetch = require("node-fetch");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -123,6 +125,9 @@ app.post("/onboarding/mentee", async (req, res) => {
   } catch (error) {
     console.error("Error saving mentee data:", error);
     res.status(500).json({ message: "Internal server error" });
+    console.log(
+      `Executing query: INSERT INTO userData (nickname, position, school, interest, want) VALUES (${nickname}, ${position}, ${school}, ${interest}, ${want})`
+    );
   }
 });
 
