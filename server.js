@@ -1,12 +1,14 @@
 const mysql = require("mysql2");
 
 // MySQL DB 설정
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: "localhost", // DB 호스트
   user: "mentorowner", // DB 사용자 이름
   password: "kangwh05!!", // DB 비밀번호
-  port: 3306,
   database: "mentorbus_db", // 사용할 DB 이름
+  waitForConnections: true,
+  connectionLimit: 10,  // 연결 풀의 최대 연결 수
+  queueLimit: 0         // 큐의 길이를 제한하지 않음
 });
 
 // DB 연결
@@ -97,7 +99,7 @@ app.post("/onboarding/mentor", (req, res) => {
     query,
     [nickname, position, job, major, createdAt, editedAt],
     (err, result) => {
-      if (err) {
+      if (err) 
         console.error("Error saving mentor data:", err);
         return res.status(500).json({ message: "Failed to save data" });
       }
@@ -107,27 +109,27 @@ app.post("/onboarding/mentor", (req, res) => {
   );
 });
 
-app.post("/onboarding/mentee", async (req, res) => {
-  console.log("Mentee request body:", req.body);
+// 연결이 필요한 곳에서 pool 사용
+app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
 
   if (!nickname) {
     return res.status(400).json({ message: "Nickname is required" });
   }
 
-  try {
-    // SQL 쿼리에서 값 바인딩을 사용하여 문제를 해결합니다.
-    await db.query(
-      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
-      [nickname, position, school, interest, want]
-    );
-    res.status(200).json({ message: "Mentee data saved successfully" });
-  } catch (error) {
-    console.error("Error saving mentee data:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+  pool.query(
+    `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
+    [nickname, position, school, interest, want],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentee data saved successfully" });
+    }
+  );
+  
 });
-
 // 수업 열기
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
