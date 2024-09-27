@@ -456,6 +456,24 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
+// Get mentor data by kakao_id
+app.get("/letters", (req, res) => {
+  pool.query(`SELECT * FROM letter Data`, (error, results) => {
+    if (error) {
+      console.error("Error retrieving letter data:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "letter not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
 app.patch("/letters/:id", (req, res) => {
   const { id } = req.params;
   const { isClick } = req.body;
