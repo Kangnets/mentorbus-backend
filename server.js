@@ -58,6 +58,7 @@ app.post("/api/login", (req, res) => {
   if (nickname) {
     kakaoUserData[nickname] = { nickname, ...rest }; // Save the user data
   }
+  console.log("loginData", loginData);
   console.log("kakaoUserData", kakaoUserData);
   console.log("nickname", nickname);
 
