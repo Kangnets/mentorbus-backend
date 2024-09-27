@@ -1,8 +1,9 @@
 const mysql = require('mysql');
 
 const dbInfo = {
-        host: 'localhost',
-        user: 'mentorowner',
+        host: 'svc.sel4.cloudtype.app',
+        port:30957,
+        user: 'root',
         password: 'kangwh05!!',
         database: 'mentorbus_db'
 };

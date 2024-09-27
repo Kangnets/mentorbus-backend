@@ -1,11 +1,12 @@
 const mysql = require("mysql2");
-
+import { config } from "./config/db";
 // Connection pool 생성
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "mentorowner",
-  password: "kangwh05!!",
-  database: "mentorbusDB",
+  host: config.db.host,
+  user: config.db.user,
+  port: config.db.port,
+  password: config.db.password,
+  database: config.db.database,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
