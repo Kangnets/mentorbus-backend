@@ -132,7 +132,7 @@ app.post("/onboarding/mentor", (req, res) => {
 });
 
 // Get mentor data by kakao_id
-app.get("/onboarding/mentor/:kakao_id", (req, res) => {
+app.get("/onboarding/userdata/:kakao_id", (req, res) => {
   const kakao_id = req.params.kakao_id;
 
   pool.query(
@@ -203,34 +203,14 @@ app.post("/onboarding/mentor", (req, res) => {
 
   */
 
-app.post("/onboarding/mentor", (req, res) => {
-  const { nickname, position, job, major, accesstoken } = req.body;
-  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
-
-  pool.query(
-    `INSERT INTO userData (nickname, position,  job, major,accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, accesstoken, createdAt, editedAt],
-    (error, results) => {
-      if (error) {
-        console.error("Error saving mentee data:", error);
-        return res
-          .status(500)
-          .json({ message: "Internal server error", error: error.message });
-      }
-      res.status(200).json({ message: "Mentor data saved successfully" });
-    }
-  );
-});
-
 app.post("/onboarding/mentee", (req, res) => {
-  const { nickname, position, school, interest, want } = req.body;
+  const { nickname, position, job, major, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position, school, interest, want, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, position, school, interest, want, createdAt, editedAt],
+    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
@@ -239,6 +219,30 @@ app.post("/onboarding/mentee", (req, res) => {
           .json({ message: "Internal server error", error: error.message });
       }
       res.status(200).json({ message: "Mentee data saved successfully" });
+    }
+  );
+});
+
+// Get mentor data by kakao_id
+app.get("/onboarding/mentee/:kakao_id", (req, res) => {
+  const kakao_id = req.params.kakao_id;
+
+  pool.query(
+    `SELECT * FROM userData WHERE kakao_id = ?`,
+    [kakao_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving mentor data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Mentor not found" });
+      }
+
+      res.status(200).json(results[0]);
     }
   );
 });
