@@ -508,26 +508,34 @@ app.patch("/letters/:id", (req, res) => {
   });
 });
 
-//class 상태 수정
-app.patch("/classes/:id", (req, res) => {
+// 수업 상태 수정
+app.patch("/classes/:id/status", (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  // Find the letter in the array
-  const myClassIndex = myClass.findIndex(
-    (my_class) => my_class.id === parseInt(id)
-  );
+  // 데이터베이스에서 해당 id의 수업 상태를 업데이트
+  const updateStatusQuery = `
+    UPDATE classData
+    SET status = ?
+    WHERE id = ?
+  `;
 
-  if (myClassIndex === -1) {
-    return res.status(404).json({ message: "Letter not found" });
-  }
+  pool.query(updateStatusQuery, [status, id], (error, results) => {
+    if (error) {
+      console.error("Error updating class status:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
 
-  // Update the isClick property
-  myClass[myClassIndex].status = status;
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Class not found" });
+    }
 
-  res.json({
-    message: "Class updated successfully",
-    data: letters[myClassIndex],
+    res.json({
+      message: "Class status updated successfully",
+      data: { id, status },
+    });
   });
 });
 
