@@ -119,7 +119,7 @@ app.post("/onboarding/mentee", async (req, res) => {
 
   try {
     await db.query(
-      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (nickname, position, school, interest, want)`
+      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (${nickname}, ${position}, ${school}, ${interest}, ${want})`
     );
     res.status(200).json({ message: "Mentee data saved successfully" });
   } catch (error) {
