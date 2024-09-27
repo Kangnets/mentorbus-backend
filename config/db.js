@@ -3,7 +3,7 @@ const config = {
   port: 30957,
   user: "root",
   password: "kangwh05!!",
-  database: "mentorbus_db",
+  database: "sys",
 };
 
 module.exports = { config };
