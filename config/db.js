@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 
-const dbInfo = {
+const db = {
   host: "svc.sel4.cloudtype.app",
   port: 30957,
   user: "root",
@@ -10,7 +10,7 @@ const dbInfo = {
 
 module.exports = {
   init: function () {
-    return mysql.createConnection(dbInfo);
+    return mysql.createConnection(db);
   },
   connect: function (conn) {
     conn.connect(function (err) {
