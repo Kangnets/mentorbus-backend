@@ -458,7 +458,7 @@ app.post("/letters", (req, res) => {
 
 // Get mentor data by kakao_id
 app.get("/letters", (req, res) => {
-  pool.query(`SELECT * FROM letter Data`, (error, results) => {
+  pool.query(`SELECT * FROM letterData`, (error, results) => {
     if (error) {
       console.error("Error retrieving letter data:", error);
       return res
@@ -729,11 +729,6 @@ app.get("/class/:id", (req, res) => {
 
 // GET API for letters
 app.get("/letters", (req, res) => {
-  res.status(200).json(letters);
-});
-
-// GET API for letters
-app.get("/letters/best", (req, res) => {
   res.status(200).json(letters);
 });
 
