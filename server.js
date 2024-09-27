@@ -118,16 +118,15 @@ app.post("/onboarding/mentee", async (req, res) => {
   }
 
   try {
+    // SQL 쿼리에서 값 바인딩을 사용하여 문제를 해결합니다.
     await db.query(
-      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (${nickname}, ${position}, ${school}, ${interest}, ${want})`
+      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
+      [nickname, position, school, interest, want]
     );
     res.status(200).json({ message: "Mentee data saved successfully" });
   } catch (error) {
     console.error("Error saving mentee data:", error);
     res.status(500).json({ message: "Internal server error" });
-    console.log(
-      `Executing query: INSERT INTO userData (nickname, position, school, interest, want) VALUES (${nickname}, ${position}, ${school}, ${interest}, ${want})`
-    );
   }
 });
 
