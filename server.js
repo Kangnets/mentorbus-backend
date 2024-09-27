@@ -5,7 +5,7 @@ const pool = mysql.createPool({
   host: "127.0.0.1",
   user: "mentorowner",
   password: "kangwh05!!",
-  database: "mentorbus_db",
+  database: "mentorbusDB",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
