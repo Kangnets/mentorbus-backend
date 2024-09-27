@@ -247,33 +247,70 @@ app.get("/onboarding/mentee/:kakao_id", (req, res) => {
   );
 });
 
+app.post("/onboarding/mentee", (req, res) => {
+  const { nickname, position, job, major, kakao_id } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+
+  pool.query(
+    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, kakao_id, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentee data saved successfully" });
+    }
+  );
+});
+
 // 수업 열기
 app.post("/class/open", (req, res) => {
-  const { nickname, title, num, date, map, content, name, major, status } =
-    req.body;
+  const {
+    nickname,
+    title,
+    num,
+    date,
+    map,
+    content,
+    name,
+    major,
+    status,
+    kakao_id,
+  } = req.body;
 
-  // 새로운 수업 생성
-  const newClass = {
-    id: classId++, // 댓글 인덱스 번호
-    content: content, // 댓글 내용
-    title: title, // 좋아요 수
-    num: num, // 최대 인원 수
-    nickname: nickname,
-    major: major,
-    name: name,
-    date: date,
-    map: map,
-    status: status,
-    createdAt: new Date(), // 댓글 작성 시간
-  };
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
-  // 댓글 저장
-  classes.push(newClass);
-
-  // 전체 newClass 객체를 응답으로 보냄
-  res
-    .status(200)
-    .json({ message: "class saved successfully", comment: newClass });
+  pool.query(
+    `INSERT INTO classData (nickname, title, num, date, map, content, name, major, status, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      nickname,
+      title,
+      num,
+      date,
+      map,
+      content,
+      name,
+      major,
+      status,
+      kakao_id,
+      createdAt,
+      editedAt,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Class data saved successfully" });
+    }
+  );
 });
 
 // Save the new class
