@@ -362,6 +362,52 @@ app.post("/class/save", (req, res) => {
 
 //글
 
+// 수업 열기
+app.post("/class/open", (req, res) => {
+  const {
+    nickname,
+    title,
+    num,
+    date,
+    map,
+    content,
+    name,
+    major,
+    status,
+    kakao_id,
+  } = req.body;
+
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+
+  pool.query(
+    `INSERT INTO classData (nickname, title, num, date, map, content, name, major, status, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)`,
+    [
+      nickname,
+      title,
+      num,
+      date,
+      map,
+      content,
+      name,
+      major,
+      status,
+      kakao_id,
+      createdAt,
+      editedAt,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Class data saved successfully" });
+    }
+  );
+});
+
 app.post("/letters", (req, res) => {
   const {
     major,
@@ -375,24 +421,34 @@ app.post("/letters", (req, res) => {
     isClick,
   } = req.body;
 
-  // 새로운 댓글 생성
-  const newLetter = {
-    id: letterId++, // 댓글 인덱스 번호
-    author,
-    star_num,
-    comment_num,
-    type,
-    mentor_answer,
-    major,
-    question,
-    title,
-    isClick,
-    createdAt: new Date(), // 댓글 작성 시간
-  };
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
-  // 댓글 저장
-  letters.push(newLetter);
-
+  pool.query(
+    `INSERT INTO letterData (major, type, star_num, comment_num, question, mentor_answer, title, author, isClick, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
+    [
+      major,
+      type,
+      star_num,
+      comment_num,
+      question,
+      mentor_answer,
+      title,
+      author,
+      isClick,
+      createdAt,
+      editedAt,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "letter data saved successfully" });
+    }
+  );
   res
     .status(200)
     .json({ message: "Comment saved successfully", comment: newLetter });
@@ -474,39 +530,6 @@ app.patch("/classes/:id", (req, res) => {
     message: "Class updated successfully",
     updatedClass: classes[classIndex],
   });
-});
-
-app.post("/letters/best", (req, res) => {
-  const {
-    major,
-    type,
-    star_num,
-    comment_num,
-    question,
-    mentor_answer,
-    title,
-    author,
-  } = req.body;
-
-  const newLetter = {
-    id: letterId++, // 댓글 인덱스 번호
-    author,
-    star_num,
-    comment_num,
-    type,
-    mentor_answer,
-    major,
-    question,
-    title,
-    createdAt: new Date(), // 댓글 작성 시간
-  };
-
-  // 댓글 저장
-  letters.push(newLetter);
-
-  res
-    .status(200)
-    .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
 // 댓글 API
