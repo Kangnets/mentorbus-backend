@@ -313,6 +313,24 @@ app.post("/class/open", (req, res) => {
   );
 });
 
+// Get mentor data by kakao_id
+app.get("/class/open", (req, res) => {
+  pool.query(`SELECT * FROM classData`, (error, results) => {
+    if (error) {
+      console.error("Error retrieving mentor data:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "class not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
 // Save the new class
 app.post("/class/save", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
