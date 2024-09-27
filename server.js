@@ -134,7 +134,7 @@ app.post("/onboarding/mentor", (req, res) => {
 
 // Get mentor data by kakao_id
 app.get("/onboarding/mentor/:kakao_id", (req, res) => {
-  const kakao_id = localStorage.getItem("kakao_id");
+  const kakao_id = req.params.kakao_id;
 
   pool.query(
     `SELECT * FROM userData WHERE kakao_id = ?`,
