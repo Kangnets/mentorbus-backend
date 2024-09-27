@@ -474,23 +474,37 @@ app.get("/letters", (req, res) => {
   });
 });
 
+// Update the isClick value in the database for a specific letter by id
 app.patch("/letters/:id", (req, res) => {
   const { id } = req.params;
   const { isClick } = req.body;
 
-  // Find the letter in the array
-  const letterIndex = letters.findIndex((letter) => letter.id === parseInt(id));
+  // isClick은 1 또는 0의 값으로 전달됨 (true/false로 변환해서 사용할 수 있음)
+  const newIsClick = isClick === true ? 1 : 0;
 
-  if (letterIndex === -1) {
-    return res.status(404).json({ message: "Letter not found" });
-  }
+  // 데이터베이스에서 해당 id의 isClick 값 업데이트
+  const updateQuery = `
+    UPDATE letterData
+    SET isClick = ?
+    WHERE id = ?
+  `;
 
-  // Update the isClick property
-  letters[letterIndex].isClick = isClick;
+  pool.query(updateQuery, [newIsClick, id], (error, results) => {
+    if (error) {
+      console.error("Error updating letter:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
 
-  res.json({
-    message: "Letter updated successfully",
-    data: letters[letterIndex],
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Letter not found" });
+    }
+
+    res.json({
+      message: "Letter updated successfully",
+      data: { id, isClick: newIsClick },
+    });
   });
 });
 
