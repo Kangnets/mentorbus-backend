@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
-import { config } from "./config/db";
+const { config } = require("./config/db");
+
 // Connection pool 생성
 const pool = mysql.createPool({
   host: config.db.host,
