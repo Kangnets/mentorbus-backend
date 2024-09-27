@@ -78,7 +78,6 @@ app.post("/api/login", (req, res) => {
       const nickname = userInfo?.properties?.nickname;
       const profile = userInfo?.properties?.profile_image;
       const email = userInfo?.kakao_account?.email;
-      localStorage.setItem("kakao_id", kakao_id);
 
       // 데이터베이스에 저장
       pool.query(
