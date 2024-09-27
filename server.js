@@ -58,6 +58,8 @@ app.post("/api/login", (req, res) => {
   if (nickname) {
     kakaoUserData[nickname] = { nickname, ...rest }; // Save the user data
   }
+  console.log("kakaoUserData", kakaoUserData);
+  console.log("nickname", nickname);
 
   // 성공적인 응답 전송
   res
@@ -112,6 +114,26 @@ app.post("/onboarding/mentor", (req, res) => {
   );
 
   */
+
+app.post("/onboarding/mentor", (req, res) => {
+  const { nickname, position, job, major } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+
+  pool.query(
+    `INSERT INTO userData (nickname, position,  job, major, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentor data saved successfully" });
+    }
+  );
+});
 
 app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
