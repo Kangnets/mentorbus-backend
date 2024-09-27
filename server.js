@@ -64,6 +64,7 @@ app.post("/api/login", (req, res) => {
   const createdAt = new Date();
   const editedAt = new Date();
 
+  // Kakao API를 통해 사용자 정보 가져오기
   axios
     .get("https://kapi.kakao.com/v2/user/me", {
       headers: {
@@ -73,28 +74,41 @@ app.post("/api/login", (req, res) => {
     .then((response) => {
       console.log(response.data); // 사용자의 이메일, 프로필 이미지, 닉네임 등이 포함됨
       const userInfo = response.data;
+      const kakao_id = userInfo?.id;
+      const nickname = userInfo?.properties?.nickname;
+      const profile = userInfo?.properties?.profile_image;
+      const email = userInfo?.kakao_account?.email;
+
+      // 데이터베이스에 저장
+      pool.query(
+        `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          nickname,
+          profile,
+          email,
+          accessToken,
+          refreshToken,
+          kakao_id,
+          createdAt,
+          editedAt,
+        ],
+        (error, results) => {
+          if (error) {
+            console.error("Error saving Kakao login data:", error);
+            return res
+              .status(500)
+              .json({ message: "Internal server error", error: error.message });
+          }
+          res
+            .status(200)
+            .json({ message: "Kakao login data saved successfully" });
+        }
+      );
     })
     .catch((error) => {
       console.error(error);
+      res.status(500).json({ message: "Error fetching Kakao user data" });
     });
-
-  const nickname = userInfo?.profile_nickname;
-  const profile = userInfo?.profile_image;
-  const email = userInfo?.account_email;
-
-  pool.query(
-    `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, profile, email, accessToken, refreshToken, createdAt, editedAt],
-    (error, results) => {
-      if (error) {
-        console.error("Error saving Kakao login data:", error);
-        return res
-          .status(500)
-          .json({ message: "Internal server error", error: error.message });
-      }
-      res.status(200).json({ message: "Kakao login data saved successfully" });
-    }
-  );
 });
 
 app.post("/onboarding/mentor", (req, res) => {
