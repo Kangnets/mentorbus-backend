@@ -78,6 +78,7 @@ app.post("/api/login", (req, res) => {
       const nickname = userInfo?.properties?.nickname;
       const profile = userInfo?.properties?.profile_image;
       const email = userInfo?.kakao_account?.email;
+      localStorage.setItem("kakao_id", kakao_id);
 
       // 데이터베이스에 저장
       pool.query(
@@ -112,13 +113,13 @@ app.post("/api/login", (req, res) => {
 });
 
 app.post("/onboarding/mentor", (req, res) => {
-  const { nickname, position, job, major, accesstoken } = req.body;
+  const { nickname, position, job, major, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major, accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, accesstoken, createdAt, editedAt],
+    `INSERT INTO userData (nickname, position, job, major, kakao_id , createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
@@ -131,22 +132,26 @@ app.post("/onboarding/mentor", (req, res) => {
   );
 });
 
-app.get("/onboarding/mentor", (req, res) => {
-  const { nickname, position, job, major, accesstoken } = req.body;
-  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+// Get mentor data by kakao_id
+app.get("/onboarding/mentor/:kakao_id", (req, res) => {
+  const kakao_id = localStorage.getItem("kakao_id");
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major, accesstoken, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, accesstoken, createdAt, editedAt],
+    `SELECT * FROM userData WHERE kakao_id = ?`,
+    [kakao_id],
     (error, results) => {
       if (error) {
-        console.error("Error saving mentee data:", error);
+        console.error("Error retrieving mentor data:", error);
         return res
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res.status(200).json({ message: "Mentor data saved successfully" });
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Mentor not found" });
+      }
+
+      res.status(200).json(results[0]);
     }
   );
 });
