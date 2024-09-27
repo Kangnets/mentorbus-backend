@@ -419,13 +419,14 @@ app.post("/letters", (req, res) => {
     title,
     author,
     isClick,
+    kakao_id,
   } = req.body;
 
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO letterData (major, type, star_num, comment_num, question, mentor_answer, title, author, isClick, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
+    `INSERT INTO letterData (major, type, star_num, comment_num, question, mentor_answer, title, author, isClick, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?,?)`,
     [
       major,
       type,
@@ -436,6 +437,7 @@ app.post("/letters", (req, res) => {
       title,
       author,
       isClick,
+      kakao_id,
       createdAt,
       editedAt,
     ],
