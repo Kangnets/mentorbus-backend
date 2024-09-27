@@ -1,24 +1,26 @@
 const mysql = require("mysql2");
 
-// MySQL DB 설정
-const db = mysql.createPool({
-  host: "localhost", // DB 호스트
-  user: "mentorowner", // DB 사용자 이름
-  password: "kangwh05!!", // DB 비밀번호
-  database: "mentorbus_db", // 사용할 DB 이름
+// Connection pool 생성
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "mentorowner",
+  password: "kangwh05!!",
+  database: "mentorbus_db",
   waitForConnections: true,
-  connectionLimit: 10,  // 연결 풀의 최대 연결 수
-  queueLimit: 0         // 큐의 길이를 제한하지 않음
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 // DB 연결
-db.connect((err) => {
+/*
+pool.connect((err) => {
   if (err) {
     console.error("Error connecting to the database:", err);
     return;
   }
   console.log("Connected to the MySQL database");
 });
+*/
 
 const fetch = require("node-fetch");
 const express = require("express");
@@ -77,6 +79,7 @@ app.get("/api/login/:nickname", (req, res) => {
 
 //온보딩 멘토
 // 온보딩 멘토
+/*
 app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major } = req.body;
 
@@ -107,29 +110,29 @@ app.post("/onboarding/mentor", (req, res) => {
       res.status(200).json({ message: "Mentor data saved successfully" });
     }
   );
-});
 
-// 연결이 필요한 곳에서 pool 사용
+  */
+
 app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want } = req.body;
-
-  if (!nickname) {
-    return res.status(400).json({ message: "Nickname is required" });
-  }
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
-    [nickname, position, school, interest, want],
+    `INSERT INTO userData (nickname, position, school, interest, want, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [nickname, position, school, interest, want, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
-        return res.status(500).json({ message: "Internal server error", error: error.message });
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
       }
       res.status(200).json({ message: "Mentee data saved successfully" });
     }
   );
-  
 });
+
 // 수업 열기
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
