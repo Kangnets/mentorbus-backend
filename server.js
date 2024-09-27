@@ -5,6 +5,7 @@ const db = mysql.createConnection({
   host: "localhost", // DB 호스트
   user: "mentorowner", // DB 사용자 이름
   password: "kangwh05!!", // DB 비밀번호
+  port: 3306,
   database: "mentorbus_db", // 사용할 DB 이름
 });
 
@@ -118,8 +119,7 @@ app.post("/onboarding/mentee", async (req, res) => {
 
   try {
     await db.query(
-      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
-      [nickname, position, school, interest, want]
+      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (nickname, position, school, interest, want)`
     );
     res.status(200).json({ message: "Mentee data saved successfully" });
   } catch (error) {
