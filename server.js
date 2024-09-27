@@ -106,31 +106,26 @@ app.post("/onboarding/mentor", (req, res) => {
   );
 });
 
-// 온보딩 멘티 API
-app.post("/onboarding/mentee", (req, res) => {
+app.post("/onboarding/mentee", async (req, res) => {
+  console.log("Mentee request body:", req.body);
   const { nickname, position, school, interest, want } = req.body;
 
   if (!nickname) {
-    return res.status(400).json({ message: "Insta handle is required" });
+    return res.status(400).json({ message: "Nickname is required" });
   }
 
-  const query = `
-    INSERT INTO userData (nickname, position, school, interest, want, createdAt, editedAt)
-    VALUES (?, ?, ?, ?, ?, NOW(), NOW())
-  `;
-
-  conn.query(
-    query,
-    [nickname, position, school, interest, want],
-    (err, results) => {
-      if (err) {
-        console.error("Error saving mentee data:", err);
-        return res.status(500).json({ message: "Error saving mentee data" });
-      }
-      res.status(200).json({ message: "Mentee data saved successfully" });
-    }
-  );
+  try {
+    await db.query(
+      `INSERT INTO userData (nickname, position, school, interest, want) VALUES (?, ?, ?, ?, ?)`,
+      [nickname, position, school, interest, want]
+    );
+    res.status(200).json({ message: "Mentee data saved successfully" });
+  } catch (error) {
+    console.error("Error saving mentee data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
+
 // 수업 열기
 app.post("/class/open", (req, res) => {
   const { nickname, title, num, date, map, content, name, major, status } =
