@@ -3,11 +3,11 @@ const { config } = require("./config/db");
 
 // Connection pool 생성
 const pool = mysql.createPool({
-  host: config.db.host,
-  user: config.db.user,
-  port: config.db.port,
-  password: config.db.password,
-  database: config.db.database,
+  host: config.host,
+  user: config.user,
+  port: config.port,
+  password: config.password,
+  database: config.database,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
