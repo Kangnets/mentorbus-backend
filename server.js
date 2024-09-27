@@ -649,6 +649,7 @@ app.get("/mydata/:nickname", (req, res) => {
 });
 
 // GET API for mentor data (only where position is "멘토")
+/*
 app.get("/mentor/data", (req, res) => {
   // userData 객체의 값들을 배열로 변환하고, 그 중 position이 "멘토"인 데이터만 필터링
   const mentors = Object.values(userData).filter(
@@ -671,3 +672,4 @@ app.get("/mentee/data", (req, res) => {
 app.listen(5002, () => {
   console.log("Server running on port 5002");
 });
+*/
