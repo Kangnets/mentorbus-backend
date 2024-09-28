@@ -458,6 +458,30 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
+// Get mentor data by letter_id
+app.get("/comments/:letter_id", (req, res) => {
+  const letter_id = req.params.kakao_id;
+
+  pool.query(
+    `SELECT * FROM commentData WHERE letter_id = ?`,
+    [letter_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving comment data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "comment not found" });
+      }
+
+      res.status(200).json(results[0]);
+    }
+  );
+});
+
 // Get mentor data by kakao_id
 app.get("/letters", (req, res) => {
   pool.query(`SELECT * FROM letterData`, (error, results) => {
@@ -578,13 +602,13 @@ app.patch("/classes/:id", (req, res) => {
 
 // 댓글 API
 app.post("/comments", (req, res) => {
-  const { kakao_id, content, likes, replyCount } = req.body;
+  const { kakao_id, content, likes, replyCount, letter_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO commentData (kakao_id, content, likes,replyCount, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
-    [kakao_id, likes, replyCount, content, createdAt, editedAt],
+    `INSERT INTO commentData (kakao_id, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+    [kakao_id, likes, replyCount, content, letter_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
