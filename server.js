@@ -49,6 +49,24 @@ let classId = 0; // 수업 인덱스 넘버
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
 
+// Save the new class
+app.post("/kakao_id", (req, res) => {
+  const { kakao_id } = req.body;
+
+  // Create a new class entry
+  const new_id = {
+    kakao_id,
+  };
+
+  // Send only the newly created class as a response
+  res.status(200).json({ message: "kakao_id saved successfully", new_id });
+});
+
+// GET API for all comments
+app.get("/kakao_id", (req, res) => {
+  res.status(200).json(new_id);
+});
+
 // 카카오 로그인 결과를 수신하는 엔드포인트
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
@@ -576,36 +594,43 @@ app.patch("/classes/:id", (req, res) => {
 
 // 댓글 API
 app.post("/comment", (req, res) => {
-  const { nickname, position, school, interest, want, content } = req.body;
+  const { kakao_id, content, likes, replyCount } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
-  if (!nickname || !content) {
-    return res
-      .status(400)
-      .json({ message: "Nickname and content are required" });
-  }
+  pool.query(
+    `INSERT INTO commentData (nickname, position,  school, interest,want, content, likes,replyCount, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+    [kakao_id, likes, replyCount, content, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Comment saved successfully" });
+    }
+  );
+});
 
-  // 새로운 댓글 생성
-  const newComment = {
-    id: commentId++, // 댓글 인덱스 번호
-    content, // 댓글 내용
-    likes: 0, // 좋아요 수
-    replyCount: 0, // 댓글 수 (대댓글)
-    author: {
-      nickname,
-      position,
-      school,
-      interest,
-      want,
-    },
-    createdAt: new Date(), // 댓글 작성 시간
-  };
+app.post("/onboarding/mentee", (req, res) => {
+  const { nickname, position, job, major, kakao_id } = req.body;
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
-  // 댓글 저장
-  comments.push(newComment);
-
-  res
-    .status(200)
-    .json({ message: "Comment saved successfully", comment: newComment });
+  pool.query(
+    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    [nickname, position, job, major, kakao_id, createdAt, editedAt],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving mentee data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Mentee data saved successfully" });
+    }
+  );
 });
 
 // 댓글 리스트 API
