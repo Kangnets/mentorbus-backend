@@ -49,24 +49,6 @@ let classId = 0; // 수업 인덱스 넘버
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
 
-// Save the new class
-app.post("/kakao_id", (req, res) => {
-  const { kakao_id } = req.body;
-
-  // Create a new class entry
-  const new_id = {
-    kakao_id,
-  };
-
-  // Send only the newly created class as a response
-  res.status(200).json({ message: "kakao_id saved successfully", new_id });
-});
-
-// GET API for all comments
-app.get("/kakao_id", (req, res) => {
-  res.status(200).json(new_id);
-});
-
 // 카카오 로그인 결과를 수신하는 엔드포인트
 app.post("/api/login", (req, res) => {
   const loginData = req.body;
