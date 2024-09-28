@@ -419,6 +419,7 @@ app.post("/letters", (req, res) => {
     title,
     author,
     isClick,
+    comment_id,
     kakao_id,
   } = req.body;
 
@@ -426,7 +427,7 @@ app.post("/letters", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO letterData (major, type, star_num, comment_num, question, mentor_answer, title, author, isClick, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?,?)`,
+    `INSERT INTO letterData (major, type, star_num, comment_num, question, mentor_answer, title, author, isClick, kakao_id, comment_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       major,
       type,
@@ -438,6 +439,7 @@ app.post("/letters", (req, res) => {
       author,
       isClick,
       kakao_id,
+      comment_id,
       createdAt,
       editedAt,
     ],
@@ -575,7 +577,7 @@ app.patch("/classes/:id", (req, res) => {
 });
 
 // 댓글 API
-app.post("/comment", (req, res) => {
+app.post("/comments", (req, res) => {
   const { kakao_id, content, likes, replyCount } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
