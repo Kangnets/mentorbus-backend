@@ -209,7 +209,7 @@ app.post("/onboarding/mentee", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  school, interest,want, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO userData (nickname, position,  school, interest,want,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [nickname, position, school, interest, want, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
