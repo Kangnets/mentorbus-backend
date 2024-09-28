@@ -121,7 +121,7 @@ app.post("/onboarding/mentor", (req, res) => {
     [nickname, position, job, major, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
-        console.error("Error saving mentee data:", error);
+        console.error("Error saving mentor data:", error);
         return res
           .status(500)
           .json({ message: "Internal server error", error: error.message });
@@ -204,13 +204,13 @@ app.post("/onboarding/mentor", (req, res) => {
   */
 
 app.post("/onboarding/mentee", (req, res) => {
-  const { nickname, position, job, major, kakao_id } = req.body;
+  const { nickname, position, school, interest, want, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, kakao_id, createdAt, editedAt],
+    `INSERT INTO userData (nickname, position,  school, interest,want, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [nickname, position, school, interest, want, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
