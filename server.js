@@ -111,7 +111,7 @@ app.post("/api/login", (req, res) => {
     });
 });
 
-app.post("/onboarding/userData", (req, res) => {
+app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
@@ -209,7 +209,7 @@ app.post("/onboarding/mentee", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [nickname, position, job, major, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
