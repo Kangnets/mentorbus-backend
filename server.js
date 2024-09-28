@@ -248,13 +248,13 @@ app.get("/onboarding/mentee/:kakao_id", (req, res) => {
 });
 
 app.post("/onboarding/mentee", (req, res) => {
-  const { nickname, position, job, major, kakao_id } = req.body;
+  const { nickname, position, school, interest, want, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO userData (nickname, position,  job, major,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, kakao_id, createdAt, editedAt],
+    `INSERT INTO userData (nickname, position,  school, interest,want,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [nickname, position, school, interest, want, kakao_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
@@ -581,7 +581,7 @@ app.post("/comment", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO commentData (nickname, position,  school, interest,want, content, likes,replyCount, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+    `INSERT INTO commentData (kakao_id, content, likes,replyCount, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
     [kakao_id, likes, replyCount, content, createdAt, editedAt],
     (error, results) => {
       if (error) {
