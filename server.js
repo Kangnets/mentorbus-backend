@@ -458,9 +458,9 @@ app.post("/letters", (req, res) => {
     .json({ message: "Comment saved successfully", comment: newLetter });
 });
 
-// Get mentor data by letter_id
+// Get comment data by letter_id
 app.get("/comments/:letter_id", (req, res) => {
-  const letter_id = req.params.kakao_id;
+  const letter_id = req.params.letter_id;
 
   pool.query(
     `SELECT * FROM commentData WHERE letter_id = ?`,
@@ -496,7 +496,7 @@ app.get("/letters", (req, res) => {
       return res.status(404).json({ message: "letter not found" });
     }
 
-    res.status(200).json(results[0]);
+    res.status(200).json(results);
   });
 });
 
@@ -639,11 +639,6 @@ app.post("/onboarding/mentee", (req, res) => {
       res.status(200).json({ message: "Mentee data saved successfully" });
     }
   );
-});
-
-// 댓글 리스트 API
-app.get("/comments", (req, res) => {
-  res.status(200).json(comments);
 });
 
 // 좋아요 증가 API
@@ -797,23 +792,6 @@ app.get("/letter/:id", (req, res) => {
   }
 
   res.status(200).json(singleLetter);
-});
-
-// GET API for a single comment by ID
-app.get("/comment/:id", (req, res) => {
-  const commentId = parseInt(req.params.id);
-  const singleComment = comments.find((c) => c.id === commentId);
-
-  if (!singleComment) {
-    return res.status(404).json({ message: "Comment not found" });
-  }
-
-  res.status(200).json(singleComment);
-});
-
-// GET API for all comments
-app.get("/comments", (req, res) => {
-  res.status(200).json(comments);
 });
 
 // GET API for user data
