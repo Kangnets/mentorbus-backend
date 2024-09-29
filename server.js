@@ -577,7 +577,10 @@ app.patch("/classes/:id/status", (req, res) => {
     WHERE id = ?
   `;
 
-  pool.query(updateStatusQuery, [status, id], (error, results) => {
+  // isClick은 1 또는 0의 값으로 전달됨 (true/false로 변환해서 사용할 수 있음)
+  const newStatus = status === "completed" ? "completed" : "pending";
+
+  pool.query(updateStatusQuery, [newStatus, id], (error, results) => {
     if (error) {
       console.error("Error updating class status:", error);
       return res
