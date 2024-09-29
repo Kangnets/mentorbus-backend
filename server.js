@@ -647,7 +647,9 @@ app.post("/comments", (req, res) => {
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res.status(200).json({ message: "Comment saved successfully", res });
+      res
+        .status(200)
+        .json({ message: "Comment saved successfully", result: res });
     }
   );
 });
