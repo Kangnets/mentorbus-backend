@@ -633,13 +633,31 @@ app.patch("/classes/:id", (req, res) => {
 
 // 댓글 API
 app.post("/comments", (req, res) => {
-  const { kakao_id, content, likes, replyCount, letter_id } = req.body;
+  const {
+    kakao_id,
+    userName,
+    position,
+    content,
+    likes,
+    replyCount,
+    letter_id,
+  } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO commentData (kakao_id, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [kakao_id, likes, replyCount, content, letter_id, createdAt, editedAt],
+    `INSERT INTO commentData (kakao_id,userName,position, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      kakao_id,
+      userName,
+      position,
+      content,
+      likes,
+      replyCount,
+      letter_id,
+      createdAt,
+      editedAt,
+    ],
     (error, results) => {
       if (error) {
         console.error("Error saving mentee data:", error);
