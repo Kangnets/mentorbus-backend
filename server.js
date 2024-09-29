@@ -567,7 +567,7 @@ app.patch("/letters/:id", (req, res) => {
 
 // 수업 상태 수정
 app.patch("/classes/:id/status", (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params.id;
   const { status } = req.body;
 
   // 데이터베이스에서 해당 id의 수업 상태를 업데이트
