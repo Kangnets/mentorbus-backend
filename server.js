@@ -508,7 +508,7 @@ app.patch("/comments/:letter_id", (req, res) => {
 
     res.json({
       message: "Letter updated successfully",
-      data: { id, isClick: newIsClick },
+      data: { letter_id, comment_id },
     });
   });
 });
@@ -647,7 +647,7 @@ app.post("/comments", (req, res) => {
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res.status(200).json({ message: "Comment saved successfully" });
+      res.status(200).json({ message: "Comment saved successfully", res });
     }
   );
 });
