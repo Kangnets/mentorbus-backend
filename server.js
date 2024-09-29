@@ -332,7 +332,7 @@ app.get("/class/open", (req, res) => {
 });
 
 // Get class data by school
-app.get("/class/open/:major", (req, res) => {
+app.get("/class/open/:schoolInfo", (req, res) => {
   const major = req.params;
 
   pool.query(
