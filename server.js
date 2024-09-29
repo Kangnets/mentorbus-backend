@@ -484,17 +484,16 @@ app.get("/comments/:letter_id", (req, res) => {
 
 // Update the isClick value in the database for a specific letter by id
 app.patch("/comments/:letter_id", (req, res) => {
-  const letter_id = req.params.letter_id;
   const { comment_id } = req.body;
 
   // 데이터베이스에서 해당 id의 isClick 값 업데이트
   const updateQuery = `
     UPDATE letterData
     SET comment_id = CONCAT(comment_id, ?)
-    WHERE letter_id = ?;
+    WHERE id = ?;
   `;
 
-  pool.query(updateQuery, [comment_id, letter_id], (error, results) => {
+  pool.query(updateQuery, [comment_id, id], (error, results) => {
     if (error) {
       console.error("Error updating letter:", error);
       return res
@@ -508,7 +507,7 @@ app.patch("/comments/:letter_id", (req, res) => {
 
     res.json({
       message: "Letter updated successfully",
-      data: { letter_id, comment_id },
+      data: { id, comment_id },
     });
   });
 });
