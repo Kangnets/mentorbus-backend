@@ -484,6 +484,7 @@ app.get("/comments/:letter_id", (req, res) => {
 
 // Update the isClick value in the database for a specific letter by id
 app.patch("/comments/:letter_id", (req, res) => {
+  const id = req.params.letter_id;
   const { comment_id } = req.body;
 
   // 데이터베이스에서 해당 id의 isClick 값 업데이트
