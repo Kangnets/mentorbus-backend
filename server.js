@@ -477,7 +477,7 @@ app.get("/comments/:letter_id", (req, res) => {
         return res.status(404).json({ message: "comment not found" });
       }
 
-      res.status(200).json(results[0]);
+      res.status(200).json(results);
     }
   );
 });
@@ -607,7 +607,7 @@ app.post("/comments", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO commentData (kakao_id, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+    `INSERT INTO commentData (kakao_id, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [kakao_id, likes, replyCount, content, letter_id, createdAt, editedAt],
     (error, results) => {
       if (error) {
