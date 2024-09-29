@@ -565,19 +565,16 @@ app.patch("/letters/:id", (req, res) => {
   });
 });
 
-// 수업 상태 수정
 app.patch("/classes/:id/status", (req, res) => {
-  const { id } = req.params.id;
+  const { id } = req.params; // Fixed destructuring
   const { status } = req.body;
 
-  // 데이터베이스에서 해당 id의 수업 상태를 업데이트
   const updateStatusQuery = `
     UPDATE classData
     SET status = ?
     WHERE id = ?
   `;
 
-  // isClick은 1 또는 0의 값으로 전달됨 (true/false로 변환해서 사용할 수 있음)
   const newStatus = status === "completed" ? "completed" : "pending";
 
   pool.query(updateStatusQuery, [newStatus, id], (error, results) => {
