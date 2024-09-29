@@ -482,6 +482,37 @@ app.get("/comments/:letter_id", (req, res) => {
   );
 });
 
+// Update the isClick value in the database for a specific letter by id
+app.patch("/comments/:letter_id", (req, res) => {
+  const letter_id = req.params.letter_id;
+  const { comment_id } = req.body;
+
+  // 데이터베이스에서 해당 id의 isClick 값 업데이트
+  const updateQuery = `
+    UPDATE letterData
+    SET comment_id = CONCAT(comment_id, ?)
+    WHERE letter_id = ?;
+  `;
+
+  pool.query(updateQuery, [comment_id, letter_id], (error, results) => {
+    if (error) {
+      console.error("Error updating letter:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Letter not found" });
+    }
+
+    res.json({
+      message: "Letter updated successfully",
+      data: { id, isClick: newIsClick },
+    });
+  });
+});
+
 // Get mentor data by kakao_id
 app.get("/letters", (req, res) => {
   pool.query(`SELECT * FROM letterData`, (error, results) => {
