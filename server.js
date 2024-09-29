@@ -646,7 +646,7 @@ app.post("/comments", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO commentData (kakao_id,userName,position, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO commentData (kakao_id, userName, position, content, likes,replyCount, letter_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ?)`,
     [
       kakao_id,
       userName,
