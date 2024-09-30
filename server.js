@@ -327,7 +327,7 @@ app.get("/class/open", (req, res) => {
       return res.status(404).json({ message: "class not found" });
     }
 
-    res.status(200).json(results[0]);
+    res.status(200).json(results);
   });
 });
 
@@ -350,7 +350,7 @@ app.get("/class/open/:major", (req, res) => {
         return res.status(404).json({ message: "class not found" });
       }
 
-      res.status(200).json(results[0]);
+      res.status(200).json(results);
     }
   );
 });
@@ -398,7 +398,9 @@ app.post("/class/save", (req, res) => {
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res.status(200).json({ message: "Class data saved successfully" });
+      res
+        .status(200)
+        .json({ message: "Class data saved successfully", results });
     }
   );
 });
