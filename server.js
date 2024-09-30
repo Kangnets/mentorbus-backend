@@ -655,7 +655,7 @@ app.patch("/classes/:id/status", (req, res) => {
   const { status } = req.body;
 
   const updateStatusQuery = `
-      UPDATE classData
+      UPDATE saveClassData
       SET status = ?
       WHERE id = ?
   `;
