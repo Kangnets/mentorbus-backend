@@ -883,7 +883,7 @@ app.get("/classes/myClass", (req, res) => {
 
 // Get mentor data by kakao_id
 app.get("/classes/myClass/:mentee_id", (req, res) => {
-  const mentee_id = req.params;
+  const mentee_id = req.params.mentee_id;
 
   pool.query(
     `SELECT * FROM saveClassData WHERE mentee_id = ? `,
