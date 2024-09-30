@@ -651,7 +651,7 @@ app.patch("/letters/:id", (req, res) => {
 });
 
 app.patch("/classes/:id/status", (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params.id;
   const { status } = req.body;
 
   const updateStatusQuery = `
