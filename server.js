@@ -886,7 +886,7 @@ app.get("/classes/myClass/:mentee_id", (req, res) => {
   const mentee_id = req.params;
 
   pool.query(
-    `SELECT * FROM savedClassData WHERE mentee_id = ? `,
+    `SELECT * FROM saveClassData WHERE mentee_id = ? `,
     [mentee_id],
     (error, results) => {
       if (error) {
