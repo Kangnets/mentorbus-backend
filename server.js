@@ -398,7 +398,9 @@ app.post("/class/save", (req, res) => {
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res.status(200).json({ message: "Class data saved successfully" });
+      res
+        .status(200)
+        .json({ message: "Class data saved successfully", response: res });
     }
   );
 });
@@ -860,21 +862,27 @@ app.get("/classes/myClass", (req, res) => {
 });
 
 // Get mentor data by kakao_id
-app.get("/classes/myClass", (req, res) => {
-  pool.query(`SELECT * FROM classData `, (error, results) => {
-    if (error) {
-      console.error("Error retrieving class data:", error);
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
-    }
+app.get("/classes/myClass/:mentee_id", (req, res) => {
+  const mentee_id = req.params;
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Class not found" });
-    }
+  pool.query(
+    `SELECT * FROM savedClassData WHERE mentee_id = ? `,
+    [mentee_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
 
-    res.status(200).json(results);
-  });
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Class not found" });
+      }
+
+      res.status(200).json(results);
+    }
+  );
 });
 
 // GET API for a single class by ID
