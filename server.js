@@ -357,31 +357,50 @@ app.get("/class/open/:major", (req, res) => {
 
 // Save the new class
 app.post("/class/save", (req, res) => {
-  const { nickname, title, num, date, map, content, name, major, status } =
-    req.body;
+  const {
+    nickname,
+    title,
+    num,
+    date,
+    map,
+    content,
+    name,
+    major,
+    kakao_id,
+    status,
+    mentee_id,
+  } = req.body;
 
-  // Create a new class entry
-  const newClass = {
-    id: classId++, // Increment class ID
-    content: content,
-    title: title,
-    num: num,
-    nickname: nickname,
-    major: major,
-    name: name,
-    date: date,
-    map: map,
-    status: status,
-    createdAt: new Date(),
-  };
+  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
-  // Store it in `myClass` using a unique identifier (e.g., class ID or name)
-  myClass.push(newClass);
-
-  // Send only the newly created class as a response
-  res
-    .status(200)
-    .json({ message: "Class saved successfully", comment: newClass });
+  pool.query(
+    `INSERT INTO saveClassData (nickname, title, num, date, map, content, name, major, status, kakao_id, mentee_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?)`,
+    [
+      nickname,
+      title,
+      num,
+      date,
+      map,
+      content,
+      name,
+      major,
+      status,
+      kakao_id,
+      mentee_id,
+      createdAt,
+      editedAt,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Error saving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+      res.status(200).json({ message: "Class data saved successfully" });
+    }
+  );
 });
 
 //글
