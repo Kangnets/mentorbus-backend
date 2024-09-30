@@ -372,10 +372,10 @@ app.post("/class/save", (req, res) => {
   } = req.body;
 
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 editedAt으로 설정
 
   pool.query(
-    `INSERT INTO saveClassData (nickname, title, num, date, map, content, name, major, status, kakao_id, mentee_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?)`,
+    `INSERT INTO saveClassData (nickname, title, num, date, map, content, name, major, status, kakao_id, mentee_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       nickname,
       title,
@@ -398,9 +398,29 @@ app.post("/class/save", (req, res) => {
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
-      res
-        .status(200)
-        .json({ message: "Class data saved successfully", result: results });
+
+      // Include the original data in the response
+      res.status(200).json({
+        message: "Class data saved successfully",
+        result: {
+          ...results,
+          data: {
+            nickname,
+            title,
+            num,
+            date,
+            map,
+            content,
+            name,
+            major,
+            status,
+            kakao_id,
+            mentee_id,
+            createdAt,
+            editedAt,
+          },
+        },
+      });
     }
   );
 });
