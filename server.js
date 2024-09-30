@@ -651,13 +651,13 @@ app.patch("/letters/:id", (req, res) => {
 });
 
 app.patch("/classes/:id/status", (req, res) => {
-  const { id } = req.params; // Fixed destructuring
+  const { id } = req.params;
   const { status } = req.body;
 
   const updateStatusQuery = `
-    UPDATE classData
-    SET status = ?
-    WHERE id = ?
+      UPDATE classData
+      SET status = ?
+      WHERE id = ?
   `;
 
   const newStatus = status === "completed" ? "completed" : "pending";
