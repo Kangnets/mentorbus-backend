@@ -400,7 +400,7 @@ app.post("/class/save", (req, res) => {
       }
       res
         .status(200)
-        .json({ message: "Class data saved successfully", response: res });
+        .json({ message: "Class data saved successfully", savedClass: res });
     }
   );
 });
