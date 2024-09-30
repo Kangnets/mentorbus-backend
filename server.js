@@ -374,53 +374,73 @@ app.post("/class/save", (req, res) => {
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
   const editedAt = new Date(); // 현재 시간을 editedAt으로 설정
 
+  // Check if title already exists
   pool.query(
-    `INSERT INTO saveClassData (nickname, title, num, date, map, content, name, major, status, kakao_id, mentee_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      nickname,
-      title,
-      num,
-      date,
-      map,
-      content,
-      name,
-      major,
-      status,
-      kakao_id,
-      mentee_id,
-      createdAt,
-      editedAt,
-    ],
+    `SELECT COUNT(*) as count FROM saveClassData WHERE title = ?`,
+    [title],
     (error, results) => {
       if (error) {
-        console.error("Error saving class data:", error);
+        console.error("Error checking for existing title:", error);
         return res
           .status(500)
           .json({ message: "Internal server error", error: error.message });
       }
 
-      // Include the original data in the response
-      res.status(200).json({
-        message: "Class data saved successfully",
-        result: {
-          ...results,
-          data: {
-            nickname,
-            title,
-            num,
-            date,
-            map,
-            content,
-            name,
-            major,
-            status,
-            kakao_id,
-            mentee_id,
-            createdAt,
-            editedAt,
-          },
-        },
-      });
+      // If title already exists, return 405 error
+      if (results[0].count > 0) {
+        return res.status(405).json({ message: "Title already exists" });
+      }
+
+      // If title does not exist, proceed with insertion
+      pool.query(
+        `INSERT INTO saveClassData (nickname, title, num, date, map, content, name, major, status, kakao_id, mentee_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          nickname,
+          title,
+          num,
+          date,
+          map,
+          content,
+          name,
+          major,
+          status,
+          kakao_id,
+          mentee_id,
+          createdAt,
+          editedAt,
+        ],
+        (error, results) => {
+          if (error) {
+            console.error("Error saving class data:", error);
+            return res
+              .status(500)
+              .json({ message: "Internal server error", error: error.message });
+          }
+
+          // Include the original data in the response
+          res.status(200).json({
+            message: "Class data saved successfully",
+            result: {
+              ...results,
+              data: {
+                nickname,
+                title,
+                num,
+                date,
+                map,
+                content,
+                name,
+                major,
+                status,
+                kakao_id,
+                mentee_id,
+                createdAt,
+                editedAt,
+              },
+            },
+          });
+        }
+      );
     }
   );
 });
