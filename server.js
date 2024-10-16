@@ -915,6 +915,30 @@ app.get("/classes/myClass/:mentee_id", (req, res) => {
   );
 });
 
+// Get mentor data by kakao_id
+app.get("/classes/myClass/:mentor_id", (req, res) => {
+  const mentor_id = req.params.mentor_id;
+
+  pool.query(
+    `SELECT * FROM ClassData WHERE kakao_id = ? `,
+    [mentor_id],
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving class data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Class not found" });
+      }
+
+      res.status(200).json(results);
+    }
+  );
+});
+
 // GET API for a single class by ID
 app.get("/class/:id", (req, res) => {
   const classId = parseInt(req.params.id);
