@@ -68,12 +68,11 @@ app.post("/api/login", async (req, res) => {
     }
 
     // 데이터베이스에 저장
-    const query = `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO kakaoData (nickname, profile, accessToken, refreshToken, kakao_id, createdAt, editedAt) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
     const values = [
       nickname,
       profile,
-      email,
       accessToken,
       refreshToken,
       kakao_id,
