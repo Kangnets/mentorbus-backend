@@ -49,66 +49,57 @@ let classId = 0; // 수업 인덱스 넘버
 let myClass = []; // 수업 저장소
 let myclassId = 0; // 수업 인덱스 넘버
 
-// 카카오 로그인 결과를 수신하는 엔드포인트
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const loginData = req.body;
+  const { accessToken, refreshToken } = loginData.data;
+  const createdAt = loginData.data.createdAt || new Date(); // createdAt 값이 없으면 현재 시간 사용
+  const editedAt = new Date(); // 요청 시점에 업데이트된 시간
 
-  // 로그인 데이터 처리
-  console.log("Received Kakao login data:", loginData);
+  try {
+    // Kakao 로그인 데이터에서 필요한 정보 추출
+    const kakao_id = loginData.data.id;
+    const nickname = loginData.data.name || "Unknown"; // name 필드가 nickname 역할
+    const profile = loginData.data.profileImage || ""; // profileImage 필드
+    const email = loginData.data.email || null; // studentId가 null이므로 email도 없을 수 있음
 
-  // accessToken과 refreshToken을 추출
-  const accessToken = loginData.accessToken;
-  const refreshToken = loginData.refreshToken;
+    // 사용자 정보가 존재하는지 확인
+    if (!kakao_id) {
+      return res.status(400).json({ message: "Kakao user data is missing" });
+    }
 
-  // 현재 시간을 createdAt과 editedAt으로 설정
-  const createdAt = new Date();
-  const editedAt = new Date();
+    // 데이터베이스에 저장
+    const query = `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const values = [
+      nickname,
+      profile,
+      email,
+      accessToken,
+      refreshToken,
+      kakao_id,
+      createdAt,
+      editedAt,
+    ];
 
-  // Kakao API를 통해 사용자 정보 가져오기
-  axios
-    .get("https://kapi.kakao.com/v2/user/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then((response) => {
-      console.log(response.data); // 사용자의 이메일, 프로필 이미지, 닉네임 등이 포함됨
-      const userInfo = response.data;
-      const kakao_id = userInfo?.id;
-      const nickname = userInfo?.properties?.nickname;
-      const profile = userInfo?.properties?.profile_image;
-      const email = userInfo?.kakao_account?.email;
+    pool.query(query, values, (error, results) => {
+      if (error) {
+        console.error("Error saving Kakao login data:", error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
 
-      // 데이터베이스에 저장
-      pool.query(
-        `INSERT INTO kakaoData (nickname, profile, email, accessToken, refreshToken, kakao_id, createdAt, editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          nickname,
-          profile,
-          email,
-          accessToken,
-          refreshToken,
-          kakao_id,
-          createdAt,
-          editedAt,
-        ],
-        (error, results) => {
-          if (error) {
-            console.error("Error saving Kakao login data:", error);
-            return res
-              .status(500)
-              .json({ message: "Internal server error", error: error.message });
-          }
-          res
-            .status(200)
-            .json({ message: "Kakao login data saved successfully" });
-        }
-      );
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).json({ message: "Error fetching Kakao user data" });
+      // 성공적으로 저장된 경우
+      return res.status(200).json({
+        message: "Kakao login data saved successfully",
+        id: kakao_id,
+      });
     });
+  } catch (error) {
+    console.error("Error processing Kakao login data:", error);
+    return res.status(500).json({
+      message: "Server error occurred",
+      error: error.message,
+    });
+  }
 });
 
 app.post("/onboarding/mentor", (req, res) => {
