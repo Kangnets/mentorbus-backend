@@ -920,7 +920,7 @@ app.get("/classes/myClass/:mentor_id", (req, res) => {
   const mentor_id = req.params.mentor_id;
 
   pool.query(
-    `SELECT * FROM ClassData WHERE kakao_id = ? `,
+    `SELECT * FROM classData WHERE kakao_id = ? `,
     [mentor_id],
     (error, results) => {
       if (error) {
