@@ -916,8 +916,8 @@ app.get("/classes/myClass/:mentee_id", (req, res) => {
 });
 
 // Get mentor data by kakao_id
-app.get("/classes/myClass/:mentor_id", (req, res) => {
-  const kakao_id = req.params.mentor_id;
+app.get("/classes/myClass/:kakao_id", (req, res) => {
+  const kakao_id = req.params.kakao_id;
 
   pool.query(
     `SELECT * FROM classData WHERE kakao_id = ? `,
