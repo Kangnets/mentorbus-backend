@@ -917,11 +917,11 @@ app.get("/classes/myClass/:mentee_id", (req, res) => {
 
 // Get mentor data by kakao_id
 app.get("/classes/myClass/:mentor_id", (req, res) => {
-  const mentor_id = req.params.mentor_id;
+  const kakao_id = req.params.mentor_id;
 
   pool.query(
     `SELECT * FROM classData WHERE kakao_id = ? `,
-    [mentor_id],
+    [kakao_id],
     (error, results) => {
       if (error) {
         console.error("Error retrieving class data:", error);
