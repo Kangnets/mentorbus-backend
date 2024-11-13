@@ -60,36 +60,55 @@ app.post("/api/login", async (req, res) => {
     const kakao_id = loginData.data.id;
     const nickname = loginData.data.name || "Unknown"; // name 필드가 nickname 역할
     const profile = loginData.data.profileImage || ""; // profileImage 필드
-    const email = loginData.data.email || null; // studentId가 null이므로 email도 없을 수 있음
 
     // 사용자 정보가 존재하는지 확인
     if (!kakao_id) {
       return res.status(400).json({ message: "Kakao user data is missing" });
     }
 
-    // 데이터베이스에 저장
-    const query = `INSERT INTO kakaoData (nickname, profile, accessToken, refreshToken, kakao_id, createdAt, editedAt) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    const values = [
-      nickname,
-      profile,
-      accessToken,
-      refreshToken,
-      kakao_id,
-      createdAt,
-      editedAt,
-    ];
+    // DB에 이미 존재하는지 확인하는 쿼리
+    const checkQuery = `SELECT * FROM kakaoData WHERE kakao_id = ?`;
 
-    pool.query(query, values, (error, results) => {
-      if (error) {
-        console.error("Error saving Kakao login data:", error);
+    pool.query(checkQuery, [kakao_id], (checkError, checkResults) => {
+      if (checkError) {
+        console.error("Error checking Kakao login data:", checkError);
         return res.status(500).json({ message: "Internal server error" });
       }
 
-      // 성공적으로 저장된 경우
-      return res.status(200).json({
-        message: "Kakao login data saved successfully",
-        id: kakao_id,
+      // 이미 데이터가 있는 경우
+      if (checkResults.length > 0) {
+        return res.status(200).json({
+          message: "Kakao login data already exists",
+          id: kakao_id,
+        });
+      }
+
+      // 데이터베이스에 새로 저장
+      const insertQuery = `
+        INSERT INTO kakaoData (nickname, profile, accessToken, refreshToken, kakao_id, createdAt, editedAt) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+      const values = [
+        nickname,
+        profile,
+        accessToken,
+        refreshToken,
+        kakao_id,
+        createdAt,
+        editedAt,
+      ];
+
+      pool.query(insertQuery, values, (insertError, insertResults) => {
+        if (insertError) {
+          console.error("Error saving Kakao login data:", insertError);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        // 성공적으로 저장된 경우
+        return res.status(200).json({
+          message: "Kakao login data saved successfully",
+          id: kakao_id,
+        });
       });
     });
   } catch (error) {
@@ -104,21 +123,52 @@ app.post("/api/login", async (req, res) => {
 app.post("/onboarding/mentor", (req, res) => {
   const { nickname, position, job, major, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 editedAt으로 설정
 
-  pool.query(
-    `INSERT INTO userData (nickname, position, job, major, kakao_id , createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, position, job, major, kakao_id, createdAt, editedAt],
-    (error, results) => {
-      if (error) {
-        console.error("Error saving mentor data:", error);
-        return res
-          .status(500)
-          .json({ message: "Internal server error", error: error.message });
-      }
-      res.status(200).json({ message: "Mentor data saved successfully" });
+  // DB에 이미 존재하는지 확인하는 쿼리
+  const checkQuery = `SELECT * FROM userData WHERE kakao_id = ?`;
+
+  pool.query(checkQuery, [kakao_id], (checkError, checkResults) => {
+    if (checkError) {
+      console.error("Error checking mentor data:", checkError);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: checkError.message });
     }
-  );
+
+    // 이미 데이터가 있는 경우
+    if (checkResults.length > 0) {
+      return res.status(200).json({ message: "mentor data already existed" });
+    }
+
+    // 데이터베이스에 새로 저장
+    const insertQuery = `
+      INSERT INTO userData (nickname, position, job, major, kakao_id, createdAt, editedAt) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    const values = [
+      nickname,
+      position,
+      job,
+      major,
+      kakao_id,
+      createdAt,
+      editedAt,
+    ];
+
+    pool.query(insertQuery, values, (insertError, results) => {
+      if (insertError) {
+        console.error("Error saving mentor data:", insertError);
+        return res.status(500).json({
+          message: "Internal server error",
+          error: insertError.message,
+        });
+      }
+
+      // 성공적으로 저장된 경우
+      res.status(200).json({ message: "Mentor data saved successfully" });
+    });
+  });
 });
 
 // Get mentor data by kakao_id
@@ -196,21 +246,55 @@ app.post("/onboarding/mentor", (req, res) => {
 app.post("/onboarding/mentee", (req, res) => {
   const { nickname, position, school, interest, want, kakao_id } = req.body;
   const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
+  const editedAt = new Date(); // 현재 시간을 editedAt으로 설정
 
-  pool.query(
-    `INSERT INTO userData (nickname, position,  school, interest,want,kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [nickname, position, school, interest, want, kakao_id, createdAt, editedAt],
-    (error, results) => {
-      if (error) {
-        console.error("Error saving mentee data:", error);
+  // DB에 이미 존재하는지 확인하는 쿼리
+  const checkQuery = `SELECT * FROM userData WHERE kakao_id = ?`;
+
+  pool.query(checkQuery, [kakao_id], (checkError, checkResults) => {
+    if (checkError) {
+      console.error("Error checking mentee data:", checkError);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: checkError.message });
+    }
+
+    // 이미 데이터가 있는 경우
+    if (checkResults.length > 0) {
+      return res.status(200).json({ message: "mentee data already existed" });
+    }
+
+    // 데이터베이스에 새로 저장
+    const insertQuery = `
+        INSERT INTO userData (nickname, position, school, interest, want, kakao_id, createdAt, editedAt) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const values = [
+      nickname,
+      position,
+      school,
+      interest,
+      want,
+      kakao_id,
+      createdAt,
+      editedAt,
+    ];
+
+    pool.query(insertQuery, values, (insertError, results) => {
+      if (insertError) {
+        console.error("Error saving mentee data:", insertError);
         return res
           .status(500)
-          .json({ message: "Internal server error", error: error.message });
+          .json({
+            message: "Internal server error",
+            error: insertError.message,
+          });
       }
+
+      // 성공적으로 저장된 경우
       res.status(200).json({ message: "Mentee data saved successfully" });
-    }
-  );
+    });
+  });
 });
 
 // Get mentor data by kakao_id
