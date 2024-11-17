@@ -704,29 +704,60 @@ app.patch("/classes/:id/status", (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
+  // 요청된 상태값이 'completed'가 아닌 경우, 잘못된 요청으로 처리
+  if (status !== "completed") {
+    return res.status(400).json({ message: "Invalid status update request" });
+  }
+
+  // 현재 상태를 확인 후 업데이트하는 쿼리
+  const checkStatusQuery = `
+      SELECT status FROM saveClassData WHERE id = ?
+  `;
   const updateStatusQuery = `
       UPDATE saveClassData
-      SET status = ?
-      WHERE id = ?
+      SET status = 'completed'
+      WHERE id = ? AND status = 'pending'
   `;
 
-  const newStatus = status === "completed" ? "completed" : "pending";
-
-  pool.query(updateStatusQuery, [newStatus, id], (error, results) => {
+  pool.query(checkStatusQuery, [id], (error, results) => {
     if (error) {
-      console.error("Error updating class status:", error);
+      console.error("Error checking class status:", error);
       return res
         .status(500)
         .json({ message: "Internal server error", error: error.message });
     }
 
-    if (results.affectedRows === 0) {
+    if (results.length === 0) {
       return res.status(404).json({ message: "Class not found" });
     }
 
-    res.json({
-      message: "Class status updated successfully",
-      data: { id, status },
+    const currentStatus = results[0].status;
+
+    // 상태가 이미 'completed'인 경우
+    if (currentStatus === "completed") {
+      return res.status(400).json({ message: "Class is already completed" });
+    }
+
+    // 상태가 'pending'일 경우 업데이트 실행
+    pool.query(updateStatusQuery, [id], (updateError, updateResults) => {
+      if (updateError) {
+        console.error("Error updating class status:", updateError);
+        return res
+          .status(500)
+          .json({
+            message: "Internal server error",
+            error: updateError.message,
+          });
+      }
+
+      if (updateResults.affectedRows === 0) {
+        return res.status(400).json({ message: "Class status update failed" });
+      }
+
+      res.json({
+        message: "Class status updated successfully",
+        data: { id, status: "completed" },
+      });
     });
   });
 });
