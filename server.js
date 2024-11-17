@@ -350,6 +350,7 @@ app.post("/class/open", (req, res) => {
     content,
     name,
     major,
+    sort,
     status,
     kakao_id,
   } = req.body;
@@ -358,7 +359,7 @@ app.post("/class/open", (req, res) => {
   const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
 
   pool.query(
-    `INSERT INTO classData (nickname, title, num, date, map, content, name, major, status, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO classData (nickname, title, num, date, map, content, name, major, sort, status, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?)`,
     [
       nickname,
       title,
@@ -368,6 +369,7 @@ app.post("/class/open", (req, res) => {
       content,
       name,
       major,
+      sort,
       status,
       kakao_id,
       createdAt,
@@ -541,53 +543,6 @@ app.post("/class/save", (req, res) => {
 });
 
 //글
-
-// 수업 열기
-app.post("/class/open", (req, res) => {
-  const {
-    nickname,
-    title,
-    num,
-    date,
-    map,
-    content,
-    name,
-    major,
-    status,
-    kakao_id,
-  } = req.body;
-
-  const createdAt = new Date(); // 현재 시간을 createdAt으로 설정
-  const editedAt = new Date(); // 현재 시간을 createdAt으로 설정
-
-  pool.query(
-    `INSERT INTO classData (nickname, title, num, date, map, content, name, major, status, kakao_id, createdAt,editedAt) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)`,
-    [
-      nickname,
-      title,
-      num,
-      date,
-      map,
-      content,
-      name,
-      major,
-      status,
-      kakao_id,
-      createdAt,
-      editedAt,
-    ],
-    (error, results) => {
-      if (error) {
-        console.error("Error saving class data:", error);
-        return res
-          .status(500)
-          .json({ message: "Internal server error", error: error.message });
-      }
-      res.status(200).json({ message: "Class data saved successfully" });
-    }
-  );
-});
-
 app.post("/letters", (req, res) => {
   const {
     major,
