@@ -187,7 +187,7 @@ app.get("/onboarding/userdata/:kakao_id", (req, res) => {
       }
 
       if (results.length === 0) {
-        return res.status(404).json({ message: "Mentor not found" });
+        return res.status(404).json({ message: "UserData not found" });
       }
 
       res.status(200).json(results[0]);
@@ -283,12 +283,10 @@ app.post("/onboarding/mentee", (req, res) => {
     pool.query(insertQuery, values, (insertError, results) => {
       if (insertError) {
         console.error("Error saving mentee data:", insertError);
-        return res
-          .status(500)
-          .json({
-            message: "Internal server error",
-            error: insertError.message,
-          });
+        return res.status(500).json({
+          message: "Internal server error",
+          error: insertError.message,
+        });
       }
 
       // 성공적으로 저장된 경우
@@ -422,6 +420,30 @@ app.get("/class/open/:major", (req, res) => {
 
       if (results.length === 0) {
         return res.status(404).json({ message: "class not found" });
+      }
+
+      res.status(200).json(results);
+    }
+  );
+});
+
+// Get class data by school
+app.get("/mentor/data/:major", (req, res) => {
+  const major = req.params;
+
+  pool.query(
+    `SELECT * FROM mentorData WHERE major = ? `,
+    [major],
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving mentor data:", error);
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: error.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "major mentor not found" });
       }
 
       res.status(200).json(results);
@@ -1015,6 +1037,7 @@ app.get("/classes/myClass/:kakao_id", (req, res) => {
       }
 
       if (results.length === 0) {
+        console.log("kakao_id_back", kakao_id);
         return res.status(404).json({ message: "Class not found" });
       }
 
