@@ -427,9 +427,8 @@ app.get("/class/open/:major", (req, res) => {
   );
 });
 
-// Get class data by school
 app.get("/mentor/data/:major", (req, res) => {
-  const major = req.params;
+  const major = req.params.major; // req.params.major로 변경
 
   pool.query(
     `SELECT * FROM mentorData WHERE major = ? `,
